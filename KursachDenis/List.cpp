@@ -1,0 +1,181 @@
+#include "List.h"
+
+// Конструктор пустого списка
+List::List()
+	: head(nullptr), last(nullptr), size(0) {}
+
+// Деструктор
+List::~List() {
+	// Если список пустой - выходим
+	if (size == 0) {
+		return;
+	}
+
+	// Очищаем список
+	for (size_t i = 0; i < size; i++) {
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+	}
+}
+
+// Вставка в конец списка
+void List::insert(Product& _data) {
+	// Если список был пустым - вставляем первый элемент
+	if (size == 0) {
+		head = new Node(_data);
+		last = head;
+		size = 1;
+		return;
+	}
+
+	// Вставляем новый элемент в конец, перевязываем указатели
+	last->next = new Node(_data);
+	last->next->prev = last;
+	last = last->next;
+	size++;
+}
+
+// Вставка в список по индексу
+void List::insert(Product& _data, size_t index) {
+	// Если список пустой или индекс больше размера списка
+	// то исплользуем метод для вставки в конец списка
+	if (size == 0 || index + 1 > size) {
+		this->insert(_data);
+		return;
+	}
+
+	// Вставка на первую позицию
+	if (index == 0) {
+		head->prev = new Node(_data);
+		head->prev->next = head;
+		head = head->prev;
+		size++;
+		return;
+	}
+
+	// Доходим до элемента, предыдущего перед нужным
+	Node* tail = head;
+	for (size_t i = 0; i + 1 < index; i++) { // НАВЕРНОЕ СЛОМАНО НАХУЙ
+		tail = tail->next;
+	}
+
+	// Вставляем новый элемент на нужное место, перевязываем указатели
+	Node* temp = new Node(_data);
+	temp->next = tail->next;
+	temp->prev = tail;
+	tail->next->prev = temp;
+	tail->next = temp;
+	size++;
+}
+
+// Удаление элемента с конца списка
+void List::remove() {
+	// Если список пустой - выходим
+	if (size == 0) {
+		return;
+	}
+
+	// Если head - последний элемент, делаем список пустым
+	if (size == 1) {
+		delete head;
+		head = nullptr;
+		last = nullptr;
+		size = 0;
+		return;
+	}
+
+	// Удаляем последний элемент
+	Node* temp = last;
+	last = last->prev;
+	delete temp;
+	size--;
+}
+
+// Удаление элемента по индексу
+void List::remove(size_t index) {
+	// Если список пустой или только с одним элементом
+	// используем метод удаления элемента в конце списка
+	if (size == 0 || size == 1) {
+		this->remove();
+		return;
+	}
+
+	// Удаление первого элемента
+	if (index == 1) {
+		Node* temp = head->next;
+		delete head;
+		head = temp;
+		size--;
+
+		// Перевязываем указатель для сохранения цикличности
+		Node* tail = head;
+		for (size_t i = 1; i < size; i++)
+		{
+			tail = tail->next;
+		}
+
+		tail->next = head;
+		return;
+	}
+
+	// Доходим до index-1 элемента
+	Node* tail = head;
+	for (size_t i = 1; i + 1 < index; i++)
+	{
+		tail = tail->next;
+	}
+
+	Node* temp = tail->next->next;
+	delete tail->next;
+	tail->next = temp;
+	size--;
+}
+
+// Поиск элемента по полю через меню
+Product* List::find() const {
+
+}
+
+// Поиск элемента по индексу
+Product* List::find(size_t index) const {
+	// Если список пуст - возвращаем пустой nullptr
+	if (size == 0) {
+		return nullptr;
+	}
+
+	// Если индекс больше размера списка, возвращаем последний элемент
+	if (index + 1 > size) {
+		return &(last->data);
+	}
+
+	// Доходим до нужного элемента и возвращаем его
+	Node* tail = head;
+	for (size_t i = 0; i < index; i++) { // ПРОВЕРИТЬ, ПОТЕНЦИАЛЬНО НЕВЕРНЫЙ ИНДЕКС
+		tail = tail->next;
+	}
+
+	return &(tail->data);
+}
+
+// Вывод списка
+void List::output() const {
+	// Если список пустой - сообщаем и выходим
+	if (size == 0) {
+		std::cout << "List is empty" << std::endl;
+		return;
+	}
+
+	// Выводим элементы списка
+	std::cout << "List:" << std::endl;
+	Node* tail = head;
+	for (size_t i = 0; i < size; i++) { // МОЖНО ЗАМЕНИТЬ НА ПРОХОД tail != last
+		std::cout << "#" << i << " ";
+		tail->data.output();
+		tail = tail->next;
+	}
+}
+
+size_t List::getSize() const {
+	return size;
+}
