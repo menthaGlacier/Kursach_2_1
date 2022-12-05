@@ -14,7 +14,7 @@ class Product {
 public:
 	// Конструкторы
 	Product();
-	Product(std::string, std::string _category, size_t _quanity, double _price,
+	Product(std::string _name, std::string _category, size_t _quanity, double _price,
 		double _percentage, size_t _day, size_t _month, size_t _year);
 	Product(const Product& copy);
 

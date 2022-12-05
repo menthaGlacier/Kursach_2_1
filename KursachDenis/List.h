@@ -12,7 +12,7 @@ public:
 	void insert(Product& _data, size_t index);
 	void remove();
 	void remove(size_t index);
-	Product* find() const;
+	Product* find(ProductFieldName field) const;
 	Product* find(size_t index) const;
 	void output() const;
 	size_t getSize() const;

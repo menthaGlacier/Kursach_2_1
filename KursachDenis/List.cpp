@@ -100,15 +100,6 @@ void List::remove(size_t index) {
 		this->remove();
 		return;
 	}
-
-	// Удаление первого элемента
-	if (index == 1) {
-		Node* temp = head->next;
-		delete head;
-		head = temp;
-		size--;
-		return;
-	}
 	
 	// Удаление первого элемента
 	if (index == 0) {
@@ -121,7 +112,7 @@ void List::remove(size_t index) {
 
 	// Доходим до элемента, предыдущего перед нужным
 	Node* tail = head;
-	for (size_t i = 0; i + 1 < index; i++) { // НАВЕРНОЕ СЛОМАНО НАХУЙ
+	for (size_t i = 0; i + 1 < index; i++) {
 		tail = tail->next;
 	}
 
@@ -134,9 +125,9 @@ void List::remove(size_t index) {
 }
 
 // Поиск элемента по полю через меню
-//Product* List::find() const {
-//
-//}
+Product* List::find(ProductFieldName field) const {
+
+}
 
 // Поиск элемента по индексу
 Product* List::find(size_t index) const {
@@ -152,7 +143,7 @@ Product* List::find(size_t index) const {
 
 	// Доходим до нужного элемента и возвращаем его
 	Node* tail = head;
-	for (size_t i = 0; i < index; i++) { // ПРОВЕРИТЬ, ПОТЕНЦИАЛЬНО НЕВЕРНЫЙ ИНДЕКС
+	for (size_t i = 0; i < index; i++) {
 		tail = tail->next;
 	}
 
@@ -167,12 +158,13 @@ void List::output() const {
 		return;
 	}
 
-	// Выводим элементы списка
-	std::cout << "List:" << std::endl;
+	// Выводим все элементы списка
 	Node* tail = head;
-	for (size_t i = 0; i < size; i++) { // МОЖНО ЗАМЕНИТЬ НА ПРОХОД tail != last
+	std::cout << "List:" << std::endl;
+	for (size_t i = 0; i < size; i++) {
 		std::cout << "#" << i << " ";
 		tail->data.output();
+		std::cout << "--------------------------------------" << std::endl;
 		tail = tail->next;
 	}
 }
