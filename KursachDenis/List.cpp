@@ -38,9 +38,9 @@ void List::insert(Product& _data) {
 
 // Вставка в список по индексу
 void List::insert(Product& _data, size_t index) {
-	// Если список пустой или индекс больше размера списка
+	// Если список пустой или индекс больше/равен размеру списка
 	// то исплользуем метод для вставки в конец списка
-	if (size == 0 || index + 1 > size) {
+	if (size == 0 || index + 1 >= size) {
 		this->insert(_data);
 		return;
 	}
@@ -94,9 +94,9 @@ void List::remove() {
 
 // Удаление элемента по индексу
 void List::remove(size_t index) {
-	// Если список пустой или только с одним элементом
-	// используем метод удаления элемента в конце списка
-	if (size == 0 || size == 1) {
+	// Если список пустой, только с одним элементом, либо индекс больше/равен
+	// размеру списка, используем метод удаления элемента в конце списка
+	if (size == 0 || size == 1 || index + 1 >= size) {
 		this->remove();
 		return;
 	}
@@ -107,35 +107,36 @@ void List::remove(size_t index) {
 		delete head;
 		head = temp;
 		size--;
-
-		// Перевязываем указатель для сохранения цикличности
-		Node* tail = head;
-		for (size_t i = 1; i < size; i++)
-		{
-			tail = tail->next;
-		}
-
-		tail->next = head;
+		return;
+	}
+	
+	// Удаление первого элемента
+	if (index == 0) {
+		head = head->next;
+		delete head->prev;
+		head->prev = nullptr;
+		size--;
 		return;
 	}
 
-	// Доходим до index-1 элемента
+	// Доходим до элемента, предыдущего перед нужным
 	Node* tail = head;
-	for (size_t i = 1; i + 1 < index; i++)
-	{
+	for (size_t i = 0; i + 1 < index; i++) { // НАВЕРНОЕ СЛОМАНО НАХУЙ
 		tail = tail->next;
 	}
 
-	Node* temp = tail->next->next;
-	delete tail->next;
-	tail->next = temp;
+	// Удаляем элемент на нужном месте, перевязываем указатели
+	Node* temp = tail->next;
+	tail->next = tail->next->next;
+	tail->next->prev = tail;
+	delete temp;
 	size--;
 }
 
 // Поиск элемента по полю через меню
-Product* List::find() const {
-
-}
+//Product* List::find() const {
+//
+//}
 
 // Поиск элемента по индексу
 Product* List::find(size_t index) const {
