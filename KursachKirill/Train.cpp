@@ -2,12 +2,12 @@
 
 // Конструктор по умолчанию
 Train::Train()
-	: trainNum(-1), dayOfWeeks(), startHour(0), startMinute(0), travelHours(0), travelMinutes(0), start(-1), stop(-1), transit() {
+	: trainNum(0), dayOfWeeks(), startHour(0), startMinute(0), travelHours(0), travelMinutes(0), start(0), stop(0), transit() {
 }
 
 // Конструктор по параметрам
-Train::Train(int _trainNum, string _dayOfWeeks, int _startHour, int _startMinute,
-	int _travelHours, int _travelMinutes, int _start, int _stop, vector<int> _transit) {
+Train::Train(uint _trainNum, string _dayOfWeeks, uint _startHour, uint _startMinute,
+	uint _travelHours, uint _travelMinutes, uint _start, uint _stop, vector<uint> _transit) {
 	setTrainNum(_trainNum);
 	setDayOfWeeks(_dayOfWeeks);
 	setStartHour(_startHour);
@@ -32,78 +32,114 @@ Train::Train(const Train& copy) {
 	setTransit(copy.transit);
 }
 
-//
-int Train::getTrainNum() {
+// Получение номера поезда
+uint Train::getTrainNum() {
 	return trainNum;
 }
 
+// Получение дней недели отправления
 string Train::getDayOfWeeks() {
 	return dayOfWeeks;
 }
 
-int Train::getStartHour() {
+// Получение часа отправленя
+uint Train::getStartHour() {
 	return startHour;
 }
 
-int Train::getStartMinute() {
+// Получение минуты отправления
+uint Train::getStartMinute() {
 	return startMinute;
 }
 
-int Train::getTravelHours() {
+// Получение часов времени в пути
+uint Train::getTravelHours() {
 	return travelHours;
 }
 
-int Train::getTravelMinutes() {
+// Получение минут времени в пути
+uint Train::getTravelMinutes() {
 	return travelMinutes;
 }
 
-int Train::getStart() {
+// Получение станции отправления
+uint Train::getStart() {
 	return start;
 }
 
-int Train::getStop() {
+// Получение станции назначения
+uint Train::getStop() {
 	return stop;
 }
 
-vector<int> Train::getTransit() {
+// Получение промежуточных станций
+vector<uint> Train::getTransit() {
 	return transit;
 }
 
-//
-void Train::setTrainNum(int _trainNum) {
-
+// Установка номера поезда
+void Train::setTrainNum(uint _trainNum) {
+	trainNum = _trainNum;
 }
 
+// Установка дней недели отправления
 void Train::setDayOfWeeks(string _dayOfWeeks) {
-
+	dayOfWeeks = _dayOfWeeks;
 }
 
-void Train::setStartHour(int _startHour) {
-
+// Установка часа отправленя
+void Train::setStartHour(uint _startHour) {
+	if (_startHour > 23) { // Час отправления не может превышать 23
+		startHour = 23;
+	}
+	else {
+		startHour = _startHour;
+	}
 }
 
-void Train::setStartMinute(int _startMinute) {
-
+// Установка минуты отправления
+void Train::setStartMinute(uint _startMinute) {
+	if (_startMinute > 59) { // Минута отправления не может превышать 59
+		startMinute = 59;
+	}
+	else {
+		startMinute = _startMinute;
+	}
 }
 
-void Train::setTravelHours(int _travelHours) {
-
+// Установка часов времени в пути
+void Train::setTravelHours(uint _travelHours) {
+	travelHours = _travelHours;
 }
 
-void Train::setTravelMinutes(int _travelMinutes) {
-
+// Установка минут времени в пути
+void Train::setTravelMinutes(uint _travelMinutes) {
+	if (_travelMinutes > 59) { // Минуты пути не могут превышать 59
+		travelMinutes = 59;
+	}
+	else {
+		travelMinutes = _travelMinutes;
+	}
 }
 
-void Train::setStart(int _start) {
-
+// Установка станции отправления
+void Train::setStart(uint _start) {
+	start = _start;
 }
 
-void Train::setStop(int _stop) {
-
+// Установка станции назначения
+void Train::setStop(uint _stop) {
+	stop = _stop;
 }
 
-void Train::setTransit(vector<int> _transit) {
+// Установка промежуточных станций
+void Train::setTransit(vector<uint> _transit) {
+	transit = _transit;
+}
 
+// Добавление промежуточной станций
+void Train::appendTransit(uint _transit) {
+	transit.push_back(_transit);
 }
 
 // Оператор присваивания
@@ -124,6 +160,22 @@ Train& Train::operator=(const Train& train) {
 	setStop(train.stop);
 	setTransit(train.transit);
 	return *this;
+}
+
+// Вывод
+void Train::print() {
+	cout << "Train number #" << trainNum << endl;
+	cout << "Working day of weeks:" << dayOfWeeks << endl;
+	cout << "Departure time - " << startHour << ":" << startMinute << endl;
+	cout << "Travel time - " << travelHours << ":" << travelMinutes << endl;
+	cout << "Main route " << start << " -> " << stop << endl;
+
+	cout << "Transit stations: ";
+	for (const uint it : transit) { // Вывод вектора через итератор
+		cout << it << " ";
+	}
+
+	cout << endl;
 }
 
 // Оператор сравнения "равно"

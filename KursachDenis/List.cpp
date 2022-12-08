@@ -56,7 +56,7 @@ void List::insert(Product& _data, size_t index) {
 
 	// Доходим до элемента, предыдущего перед нужным
 	Node* tail = head;
-	for (size_t i = 0; i + 1 < index; i++) { // НАВЕРНОЕ СЛОМАНО НАХУЙ
+	for (size_t i = 0; i + 1 < index; i++) {
 		tail = tail->next;
 	}
 

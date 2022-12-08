@@ -5,7 +5,7 @@
 // Класс узла списка
 class Node {
 public:
-	// Конструктор по параметрам
+	// Конструктор по параметру
 	Node(Train& _train);
 private:
 	Train& train;

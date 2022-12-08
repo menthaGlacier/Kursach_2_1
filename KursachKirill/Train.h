@@ -6,35 +6,38 @@
 
 using namespace std;
 
+typedef unsigned int uint;
+
 class Train {
 public:
 	// Конструкторы
 	Train();
-	Train(int _trainNum, string _dayOfWeeks, int _startHour, int _startMinute,
-		int _travelHours, int _travelMinutes, int _start, int _stop, vector<int> _transit);
+	Train(uint _trainNum, string _dayOfWeeks, uint _startHour, uint _startMinute,
+		uint _travelHours, uint _travelMinutes, uint _start, uint _stop, vector<uint> _transit);
 	Train(const Train& copy);
 
 	// Геттеры
-	int getTrainNum();
+	uint getTrainNum();
 	string getDayOfWeeks();
-	int getStartHour();
-	int getStartMinute();
-	int getTravelHours();
-	int getTravelMinutes();
-	int getStart();
-	int getStop();
-	vector<int> getTransit();
+	uint getStartHour();
+	uint getStartMinute();
+	uint getTravelHours();
+	uint getTravelMinutes();
+	uint getStart();
+	uint getStop();
+	vector<uint> getTransit();
 
 	// Сеттеры
-	void setTrainNum(int _trainNum);
+	void setTrainNum(uint _trainNum);
 	void setDayOfWeeks(string _dayOfWeeks);
-	void setStartHour(int _startHour);
-	void setStartMinute(int _startMinute);
-	void setTravelHours(int _travelHours);
-	void setTravelMinutes(int _travelMinutes);
-	void setStart(int _start);
-	void setStop(int _stop);
-	void setTransit(vector<int> _transit);
+	void setStartHour(uint _startHour);
+	void setStartMinute(uint _startMinute);
+	void setTravelHours(uint _travelHours);
+	void setTravelMinutes(uint _travelMinutes);
+	void setStart(uint _start);
+	void setStop(uint _stop);
+	void setTransit(vector<uint> _transit);
+	void appendTransit(uint _transit);
 
 	// Вывод
 	void print();
@@ -46,10 +49,10 @@ public:
 	bool operator<(const Train& train);
 
 private:
-	int trainNum;
+	uint trainNum;
 	string dayOfWeeks;
-	int startHour, startMinute;
-	int travelHours, travelMinutes;
-	int start, stop;
-	vector<int> transit;
+	uint startHour, startMinute;
+	uint travelHours, travelMinutes;
+	uint start, stop;
+	vector<uint> transit;
 };
