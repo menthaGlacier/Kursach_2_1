@@ -1,11 +1,11 @@
 #include "List.h"
 
-// 
+// Конструктор по умолчанию
 List::List()
 	: head(nullptr), last(nullptr), size(0) {
 }
 
-// 
+// Деструктор
 List::~List() {
 	// Если список пустой - выходим
 	if (size == 0) {
@@ -38,10 +38,10 @@ void List::insert(Train& _train) {
 
 // Вставка в список по индексу
 void List::insert(Train& _train, uint index) {
-	// Если список пустой или индекс больше/равен размеру списка
-	// то исплользуем метод для вставки в конец списка
+	// Если список пуст или индекс больше или равен размеру списка
+	// то используем метод вставки в конец списка
 	if (size == 0 || index + 1 >= size) {
-		this->insert(_train);
+		insert(_train);
 		return;
 	}
 
@@ -67,6 +67,65 @@ void List::insert(Train& _train, uint index) {
 	size++;
 }
 
+// Удаление с конца списка
+void List::remove() {
+	// Выходим при пустом списке
+	if (size == 0) {
+		return;
+	}
+
+	// Удаляем первый элемент, если он единственный
+	if (size == 1) {
+		delete head;
+		head = nullptr;
+		size--;
+		return;
+	}
+
+	// Доходим до предпоследнего элемента
+	Node* tail = head;
+	while (tail->next != last) {
+		tail = tail->next;
+	}
+
+	// Удаляем последний элемент
+	tail->next = nullptr;
+	delete last;
+	last = tail;
+	size--;
+}
+
+// Удаление по индексу
+void List::remove(uint index) {
+	// Если список пуст, список имеет один элемент, либо индекс больше
+	// или равен размеру списка то используем метод удаления с конца списка
+	if (size == 0 || size == 1 || index + 1 >= size) {
+		remove();
+		return;
+	}
+
+	// Удаление с первой позиции
+	if (index == 0) {
+		// Удаляем первый элемент
+		Node* temp = head->next;
+		delete head;
+		head = temp;
+		size--;
+		return;
+	}
+
+	// Доходим до элемента, предыдущего перед нужным
+	Node* tail = head;
+	for (uint i = 0; i + 1 < index; i++) {
+		tail = tail->next;
+	}
+
+	// Удаляем элемент
+	Node* temp = tail->next->next;
+	delete tail->next;
+	tail->next = temp;
+	size--;
+}
 
 // Вывод списка
 void List::print() {
