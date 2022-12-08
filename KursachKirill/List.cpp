@@ -67,6 +67,15 @@ void List::insert(Train& _train, uint index) {
 	size++;
 }
 
+// Вставка с сохранением порядка
+void List::insertOrdered(Train& _train) {
+	// Вставляем элемент в конец
+	insert(_train);
+
+	// Сортируем список
+	sort();
+}
+
 // Удаление с конца списка
 void List::remove() {
 	// Выходим при пустом списке
@@ -125,6 +134,10 @@ void List::remove(uint index) {
 	delete tail->next;
 	tail->next = temp;
 	size--;
+}
+
+void List::sort() {
+
 }
 
 // Вывод списка

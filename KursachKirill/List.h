@@ -15,14 +15,17 @@ public:
 	List();
 	~List();
 
-	// Вставка в конец и по индексу
+	// Вставка в конец, по индексу и сохранением порядка
 	void insert(Train& _train);
 	void insert(Train& _train, uint index);
-	
+	void insertOrdered(Train& _train);
+
 	// Удаление последнего элемента и по индексу
 	void remove();
 	void remove(uint index);
 
+	// Сортировка списка
+	void sort();
 
 	// Вывод списка
 	void print();

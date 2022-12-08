@@ -144,12 +144,12 @@ void Train::appendTransit(uint _transit) {
 
 // Оператор присваивания
 Train& Train::operator=(const Train& train) {
-	// Если объекты совпадают, копирование не требуется
+	// Копирование не нужно, если объекты одинаковы
 	if (this == &train) {
 		return *this;
 	}
 
-	// Иначе копируем содержимое _product в объект
+	// Копируем содержимое параметра
 	setTrainNum(train.trainNum);
 	setDayOfWeeks(train.dayOfWeeks);
 	setStartHour(train.startHour);
@@ -178,9 +178,9 @@ void Train::print() {
 	cout << endl;
 }
 
-// Оператор сравнения "равно"
+// Оператор равности
 bool Train::operator==(const Train& train) {
-	// Если какое-либо поле не совпадает с сравниваемым - объекты не равны
+	// Объекты не равны, если есть отличия в каких-либо полях
 	if (this->trainNum != train.trainNum
 		|| this->dayOfWeeks != train.dayOfWeeks
 		|| this->startHour != train.startHour
@@ -197,9 +197,9 @@ bool Train::operator==(const Train& train) {
 	return true;
 }
 
-// Оператор сравнения "больше"
+// Оператор больше
 bool Train::operator>(const Train& train) {
-	// Сравнение идёт по полю "Наименование товара"
+	// Сравнение по номеру поезда
 	if (this->trainNum > train.trainNum) {
 		return true;
 	}
@@ -207,9 +207,9 @@ bool Train::operator>(const Train& train) {
 	return false;
 }
 
-// Оператор сравнения "меньше"
+// Оператор меньше
 bool Train::operator<(const Train& train) {
-	// Сравнение идёт по полю "Наименование товара"
+	// Сравнение по номеру поезда
 	if (this->trainNum < train.trainNum) {
 		return true;
 	}
