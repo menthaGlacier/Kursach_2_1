@@ -238,7 +238,7 @@ fstream& operator<<(fstream& file, const Train& train) {
 	// Записываем размер вектора, затем его элементы
 	uint vecSize = train.transit.size();
 	file.write((const char*)(&vecSize), sizeof(vecSize));
-	for (const uint i : train.transit) {
+	for (uint i : train.transit) {
 		file.write((const char*)(&i), sizeof(i));
 	}
 

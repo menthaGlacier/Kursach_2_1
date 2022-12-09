@@ -16,8 +16,13 @@ int main() {
 	train2.print();
 
 	Train read;
-	fstream fl("TEST.bin", ios::out, ios::binary);
+	fstream fl;
+	fl.open("TEST.bin", ios::out | ios::binary);
 	fl << train;
+	fl.close();
+
+	fl.open("TEST.bin", ios::in | ios::binary);
 	fl >> read;
+	fl.close();
 	read.print();
 }
