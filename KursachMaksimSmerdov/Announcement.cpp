@@ -39,19 +39,25 @@ void Announcement::setNumber(unsigned long long num)
 unsigned short Announcement::getMaxDay(unsigned short m, unsigned short y)
 {
 	unsigned short d_max;
-	if (m == 2)
+	if (m == 2)	//если мес€ц февраль
 	{
-		if (y % 4 == 0) { d_max = 29; }
-		else { d_max = 28; }
+		if (y % 4 == 0) { d_max = 29; }	//если год високосный, то максимальный день 29
+		else { d_max = 28; }	//иначе 28
 	}
-	else if ((m % 2 == 1 && m < 8) || (m % 2 == 0 && m >= 8)) { d_max = 31; }
-	else { d_max = 30; }
+	//если мес€ц нечЄтный (до августа) или чЄтный (начина€ с сент€бр€) 
+	else if ((m % 2 == 1 && m < 8) || (m % 2 == 0 && m >= 8)) { d_max = 31; }	//то максимальный день  31
+	else { d_max = 30; }	//иначе 30
 	return d_max;
 }
 
 bool Announcement::isDateCorrect(unsigned short d, unsigned short m, unsigned short y)
 {
-	if (d <= 31 && m <= 12 && y >= 2000 && y <= 2022 && d < getMaxDay(m, y)) { return true; }
+	//ѕроверка дн€, мес€ца и года на соответствие пределам
+	if (d > 0 && d <= 31 &&
+		m > 0 && m <= 12 &&
+		y >= 2000 && y <= 2022 &&
+		d < getMaxDay(m, y))
+	{ return true; }
 	else { return false; }
 }
 
@@ -70,13 +76,13 @@ void Announcement::print()
 
 bool Announcement::dateCheck(const string& date)
 {
-	if (date.size() != 10)
+	if (date.size() != 10)	//размер строки с датой в формате дд.мм.гггг = 10
 	{
 		return false;
 	}
 
 	unsigned short d = 0, m = 0, y = 0;
-	for (size_t i = 0; i < date.size(); i++)
+	for (size_t i = 0; i < date.size(); i++)	//преобразовываем символы в числа
 	{
 		if (i == 2 || i == 5)
 		{
@@ -101,5 +107,5 @@ bool Announcement::dateCheck(const string& date)
 		}
 	}
 
-	return isDateCorrect(d, m, y);
+	return isDateCorrect(d, m, y);	//возвращаем результат проверки на валидность
 }
