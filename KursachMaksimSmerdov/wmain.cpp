@@ -4,23 +4,6 @@
 
 using namespace std;
 
-#define TEST1											\
-Announcement ann;																					\
-\
-ann.setCategory(string("1"));																		\
-ann.setBS(1);																\
-ann.setAdText(string("1"));													\
-ann.setNumber(1);													\
-\
-ann.setDate(3, 3, 2003);				\
-list.add(ann);										\
-\
-ann.setDate(2, 2, 2002);				\
-list.add(ann);										\
-\
-ann.setDate(1,1,2001);										\
-list.add(ann);									\
-
 int main()
 {
 	setlocale(LC_ALL, "Rus");	//устанавливаем русскую локаль и кодировку символов
@@ -28,9 +11,8 @@ int main()
 	SetConsoleOutputCP(1251);
 
 	List list;	//создаём список
-	TEST1
-
 	bool should_close = false;	//переменная, обозначающая выход из программы при значении true
+	string buffer;
 	while (!should_close)
 	{
 		system("cls");	//очищаем экран
@@ -57,7 +39,6 @@ int main()
 		{
 		case '1':		//добавление объявления
 		{
-			string buffer;	//строка для ввода данных
 			Announcement new_element;	//добавляемый элемент
 			while (true)	//получаем дату
 			{
@@ -103,6 +84,7 @@ int main()
 			cout << "Введите рубрику объявления" << endl;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			new_element.setCategory(buffer);
 
 			while (true)	//устанавливаем номер телефона
@@ -134,6 +116,7 @@ int main()
 			cout << "Введите текст объявления" << endl;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			new_element.setAdText(buffer);
 
 			list.add(new_element);
@@ -151,7 +134,6 @@ int main()
 		{
 			cout << "Введите номер объявления: ";
 			size_t index = 0;
-			string buffer;
 			bool failed = false;
 			cin >> buffer;	//получаем строку от пользователя
 			for (size_t i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
@@ -176,9 +158,9 @@ int main()
 		case '4':	//Поиск по рубрике
 		{
 			cout << "Введите рубрику для поиска: ";
-			string buffer;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			list.findCategory(buffer);
 			break;
 		}
@@ -186,9 +168,9 @@ int main()
 		case '5':	//Поиск по тексту объявления
 		{
 			cout << "Введите текст для поиска: ";
-			string buffer;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			list.findText(buffer);	
 			break;
 		}
@@ -202,9 +184,9 @@ int main()
 		case '7':	//Сохранение в файл
 		{
 			cout << "Введите название файла для сохранеия" << endl;
-			string buffer;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			if (list.save(buffer) == false) { cout << "Произошла ошибка при сохранении" << endl; }
 			else { cout << "Список сохранён в файл " << buffer << endl; }
 			break;
@@ -213,9 +195,9 @@ int main()
 		case '8':	//Загрузка из файла
 		{
 			cout << "Введите название файла для сохранеия" << endl;
-			string buffer;
 			cin.ignore(1000, '\n');
 			getline(cin, buffer);
+			
 			if (list.load(buffer) == false) { cout << "Произошла ошибка при загрузке" << endl; }
 			else { cout << "Список из файла " << buffer << " успешно загружен"<< endl; }
 			break;
@@ -242,8 +224,9 @@ int main()
 
 		if (!should_close)
 		{
-			cout << "\n\n\n";
+			cin.unget();
 			cin.ignore(1000, '\n');
+			cout << "\n\n\n";
 			system("pause");
 		}
 	}
