@@ -216,3 +216,58 @@ bool Train::operator<(const Train& train) {
 
 	return false;
 }
+
+// Оператор записи в файл
+ofstream& operator<<(ofstream& file, const Train& train) {
+	// Записывем все простые элементы
+	file.write((const char*)(&train.trainNum), sizeof(train.trainNum));
+	file.write((const char*)(&train.startHour), sizeof(train.startHour));
+	file.write((const char*)(&train.startMinute), sizeof(train.startMinute));
+	file.write((const char*)(&train.travelHours), sizeof(train.travelHours));
+	file.write((const char*)(&train.travelMinutes), sizeof(train.travelMinutes));
+	file.write((const char*)(&train.start), sizeof(train.start));
+	file.write((const char*)(&train.stop), sizeof(train.stop));
+
+	// Записываем размер строки, затем её текст
+	uint strSize = train.dayOfWeeks.size();
+	file.write((const char*)(&strSize), sizeof(strSize));
+	if (strSize > 0) {
+		file.write(train.dayOfWeeks.c_str(), strSize);
+	}
+
+	// Записываем размер вектора, затем его элементы
+	uint vecSize = train.transit.size();
+	file.write((const char*)(&vecSize), sizeof(vecSize));
+	for (const uint i : train.transit) {
+		file.write((const char*)(&i), sizeof(i));
+	}
+}
+
+// Оператор чтения с файла
+ifstream& operator>>(ifstream& file, Train& train) {
+	// Считываем все простые элементы
+	file.read((char*)(&train.trainNum), sizeof(train.trainNum));
+	file.read((char*)(&train.startHour), sizeof(train.startHour));
+	file.read((char*)(&train.startMinute), sizeof(train.startMinute));
+	file.read((char*)(&train.travelHours), sizeof(train.travelHours));
+	file.read((char*)(&train.travelMinutes), sizeof(train.travelMinutes));
+	file.read((char*)(&train.start), sizeof(train.start));
+	file.read((char*)(&train.stop), sizeof(train.stop));
+
+	// Считываем размер строки, затем её текст
+	uint strSize = 0;
+	file.read((char*)(&strSize), sizeof(strSize));
+	if (strSize > 0) {
+		char* tempStr = new char[strSize];
+		file.read(tempStr, strSize);
+		train.dayOfWeeks.assign(tempStr, strSize);
+		delete[] tempStr;
+	}
+
+	// Считываем размер вектора, затем его элементы
+	uint vecSize = 0, temp;
+	file.read((char*)(&vecSize), sizeof(vecSize));
+	for (uint i = 0; i < vecSize; i++) {
+		file.read((char*)(&i), sizeof(i));
+	}
+}

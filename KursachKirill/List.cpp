@@ -136,8 +136,36 @@ void List::remove(uint index) {
 	size--;
 }
 
-void List::sort() {
+// Поиск элемента по разным полям через меню
+Train* find() {
+	cout << "Select the field you want to find element by:" << endl;
+	cout << "1 - Train number" << endl << "2 - Working day of weeks" << endl
+		<< "3 - Departure time" << endl << "4 - Travel time" << endl
+		<< "5 - Departure station" << endl << "6 - Destination station" << endl
+		<< "7 - Transit stations" << endl;
+	// TODO
+}
 
+// Сортировка списка
+void List::sort() {
+	// Используем пузырьковую сортировку
+	for (uint i = 0; i < size; i++) {
+		Node* tail = head;
+		for (uint j = i + 1; j < size; j++) {
+			if (tail->train > tail->next->train) {
+				Node* temp = tail->next;
+				tail->next = temp->next;
+				temp->next = tail;
+				if (tail == head) {
+					head = temp;
+				}
+
+				tail = temp;
+			}
+
+			tail = tail->next;
+		}
+	}
 }
 
 // Вывод списка
