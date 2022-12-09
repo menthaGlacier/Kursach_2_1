@@ -50,8 +50,8 @@ public:
 	bool operator<(const Train& train);
 
 	// Запись и чтение в файл
-	friend ofstream& operator<<(ofstream& file, const Train& train);
-	friend ifstream& operator>>(ifstream& file, Train& train);
+	friend fstream& operator<<(fstream& file, const Train& train);
+	friend fstream& operator>>(fstream& file, Train& train);
 
 private:
 	uint trainNum;

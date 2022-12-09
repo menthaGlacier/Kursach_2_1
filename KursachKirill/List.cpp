@@ -144,6 +144,8 @@ Train* find() {
 		<< "5 - Departure station" << endl << "6 - Destination station" << endl
 		<< "7 - Transit stations" << endl;
 	// TODO
+	return nullptr; // DEBUG!!!
+
 }
 
 // Сортировка списка
