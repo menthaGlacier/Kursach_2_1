@@ -15,12 +15,12 @@ public:
 
 	void sort();
 
-	void findCategory(string);
-	void findText(string);
+	void findCategory(const string& ctgry);
+	void findText(const string& text);
 
 	void out();
-	void save();
-	void load();
+	bool save(const string& filename);
+	bool load(const string& filename);
 private:
 	Announcement* head;
 };

@@ -1,8 +1,25 @@
 #include "dependencies.h"
-//#include "Announcement.h"
+#include "Announcement.h"
 #include "List.h"
 
 using namespace std;
+
+#define TEST1											\
+Announcement ann;																					\
+\
+ann.setCategory(string("1"));																		\
+ann.setBS(1);																\
+ann.setAdText(string("1"));													\
+ann.setNumber(1);													\
+\
+ann.setDate(3, 3, 2003);				\
+list.add(ann);										\
+\
+ann.setDate(2, 2, 2002);				\
+list.add(ann);										\
+\
+ann.setDate(1,1,2001);										\
+list.add(ann);									\
 
 int main()
 {
@@ -10,7 +27,11 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
+
 	List list;
+	TEST1
+
+	{ cout << "Test1 failed" << endl; }
 	bool should_close = false;
 	while (!should_close)
 	{
@@ -44,7 +65,6 @@ int main()
 			while (true)
 			{
 				cout << "Введите дату (дд.мм.гггг)" << endl;
-				buffer.clear();
 				cin >> buffer;
 
 				if (!Announcement::dateCheck(buffer))
@@ -67,32 +87,52 @@ int main()
 
 			while (true)
 			{
-				cout << "Выберите тип объявления (куплю/продам)" << std::endl;
-				buffer.clear();
-				cin >> buffer;
-				if (buffer != "куплю" && buffer != "продам")
+				cout
+					<< "Выберите тип объявления:\n"
+					<< "1. Купля\n"
+					<< "2. Продажа" << endl;
+
+				unsigned short choice;
+				cin >> choice;
+				if (choice == 1 || choice == 2)
 				{
-					cout << "Неверный тип" << endl;
+					new_element.setBS(choice);
+					break;
 				}
-				else
+				else { cout << "Неверный тип" << endl; }
+			}
+
+			cout << "Введите рубрику объявления" << endl;
+			cin >> buffer;
+			new_element.setCategory(buffer);
+
+			while (true)
+			{
+				cout << "Введите контактный номер (без 8)" << endl;
+				unsigned long long number = 0;
+				bool failed = false;
+				cin >> buffer;
+				for (size_t i = 0; i < buffer.size(); i++)
 				{
-					new_element.setBS(buffer);
+					if (buffer[i] >= '0' && buffer[i] <= '9')
+					{
+						number = number * 10 + buffer[i] - '0';
+					}
+					else
+					{
+						cout << "Неверный номер" << endl;
+						failed = true;
+						break;
+					}
+				}
+				if (failed == false)
+				{
+					new_element.setNumber(number);
 					break;
 				}
 			}
 
-			cout << "Введите рубрику объявления" << endl;
-			buffer.clear();
-			cin >> buffer;
-			new_element.setCategory(buffer);
-
-			cout << "Введите контактный номер (без 8)" << endl;
-			unsigned long long number;
-			cin >> number;
-			new_element.setNumber(number);
-
 			cout << "Введите текст объявления" << endl;
-			buffer.clear();
 			cin >> buffer;
 			new_element.setAdText(buffer);
 
@@ -112,18 +152,26 @@ int main()
 			cout << "Введите номер объявления: ";
 			size_t index;
 			cin >> index;
-			if (list.del(index-1) == true) { cout << "Объявление спешно удалено"; }
+			if (list.del(index-1) == true) { cout << "Объявление успешно удалено"; }
 			else { cout << "Нет такого объявления"; }
 			break;
 		}
 
 		case 4:
 		{
+			cout << "Введите рубрику для поиска: ";
+			string buffer;
+			cin >> buffer;
+			list.findCategory(buffer);
 			break;
 		}
 
 		case 5:
 		{
+			cout << "Введите текст для поиска: ";
+			string buffer;
+			cin >> buffer;
+			list.findText(buffer);
 			break;
 		}
 
@@ -135,17 +183,28 @@ int main()
 
 		case 7:
 		{
+			cout << "Введите название файла для сохранеия" << endl;
+			string buffer;
+			cin >> buffer;
+			if (list.save(buffer) == false) { cout << "Произошла ошибка при сохранении" << endl; }
+			else { cout << "Список сохранён в файл " << buffer << endl; }
 			break;
 		}
 
 		case 8:
 		{
+			cout << "Введите название файла для сохранеия" << endl;
+			string buffer;
+			cin >> buffer;
+			if (list.load(buffer) == false) { cout << "Произошла ошибка при загрузке" << endl; }
+			else { cout << "Список из файла " << buffer << " успешно загружен"<< endl; }
 			break;
 		}
 
 		case 9:
 		{
 			list.clear();
+			cout << "Список очищен" << endl;
 			break;
 		}
 
@@ -157,11 +216,14 @@ int main()
 
 		default:
 		{
-
+			cout << "Неизвестное действие" << endl;
 		}
 		}
-
-		cout << "\n\n\n";
-		system("pause");
+		
+		if (!should_close)
+		{
+			cout << "\n\n\n";
+			system("pause");
+		}
 	}
 }
