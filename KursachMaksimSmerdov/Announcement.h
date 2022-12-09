@@ -16,7 +16,10 @@ public:
 	void setAdText(const string& text);
 	void setNumber(unsigned long long num);
 
-	void print();	//вывод элемента
+	void print() const;	//вывод элемента
+
+	bool operator<(const Announcement& right) const;
+	bool operator>(const Announcement& right) const;
 private:
 	//проверка даты на валидность
 	static bool isDateCorrect(unsigned short d, unsigned short m, unsigned short y);

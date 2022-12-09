@@ -74,19 +74,7 @@ void List::sort()	//сортировка выборкой по дате
 
 		while (current != nullptr)	//доходим до конца списка
 		{
-			bool do_swap = false;	//переменная, указывающая найден ли новый минимальный элемент
-			//сравниваем даты
-			if (current->year == minimal->year)
-			{
-				if (current->month == minimal->month)
-				{
-					if (current->day < minimal->day) { do_swap = true; }
-				}
-				else if (current->month < minimal->month) { do_swap = true; }
-			}
-			else if (current->year < minimal->year) { do_swap = true; }
-
-			if (do_swap == true)	//если текущий элемент меньше минимального
+			if (*current < *minimal)	//если текущий элемент меньше минимального
 			{
 				minimal = current;		//меняем минимальный элемент
 				min_prev = current_prev;	//и его предыдущий

@@ -61,7 +61,7 @@ bool Announcement::isDateCorrect(unsigned short d, unsigned short m, unsigned sh
 	else { return false; }
 }
 
-void Announcement::print()
+void Announcement::print() const
 {
 	cout
 		<< "\n###ќбъ€вление от " << setfill('0')
@@ -108,4 +108,34 @@ bool Announcement::dateCheck(const string& date)
 	}
 
 	return isDateCorrect(d, m, y);	//возвращаем результат проверки на валидность
+}
+
+bool Announcement::operator<(const Announcement& right) const
+{
+	if (year == right.year)
+	{
+		if (month == right.month)
+		{
+			if (day < right.day) { return true; }
+		}
+		else if (month < right.month) { return true; }
+	}
+	else if (year < right.year) { return true; }
+
+	return false;
+}
+
+bool Announcement::operator>(const Announcement& right) const
+{
+	if (year == right.year)
+	{
+		if (month == right.month)
+		{
+			if (day > right.day) { return true; }
+		}
+		else if (month > right.month) { return true; }
+	}
+	else if (year > right.year) { return true; }
+
+	return false;
 }
