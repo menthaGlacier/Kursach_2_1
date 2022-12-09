@@ -35,6 +35,8 @@ public:
 	void print();
 
 	// Сохранение и загрузка списка в и из бинарного файла
+	bool save(const char* fileName);
+	bool load(const char* fileName);
 private:
 	Node* head; // Указатель на первый элемент
 	Node* last; // Указатель на последний элемент

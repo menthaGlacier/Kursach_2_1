@@ -183,8 +183,62 @@ void List::print() {
 	std::cout << "List:" << std::endl;
 	for (uint i = 0; i < size; i++) {
 		cout << "Element" << i << " ";
-		tail->train.print();
+		tail->train->print();
 		cout << endl;
 		tail = tail->next;
+	}
+}
+
+// Сохранение списка в бинарном файле
+bool List::save(const char* fileName) {
+	// Открываем файл в режиме бинарной записи и проверяем его
+	fstream file(fileName, ios::out | ios::binary);
+	if (!file.is_open()) {
+		cout << "Fail to open file" << endl;
+		return false;
+	}
+
+	// Пишем в файл до конца списка или до ошибки
+	Node* tail = head;
+	while (tail->next != nullptr && !file.fail()) {
+		file << tail->train;
+	}
+
+	file.close();
+
+	// Сообщаем о ошибке, если она произошла
+	if (file.fail()) {
+		cout << "Fail to write to file" << endl;
+		return false;
+	}
+
+	return true;
+}
+
+// Загрузка списка из бинарного файла
+bool List::load(const char* fileName) {
+	// Открываем файл в режиме бинарного чтения и проверяем его
+	fstream file(fileName, ios::in | ios::binary);
+	if (!file.is_open()) {
+		cout << "Fail to open file" << endl;
+		return false;
+	}
+
+	// Очищаем список
+	while (size != 0) {
+		remove();
+	}
+
+	// Читаем файл до конца
+	while(file.peek() != EOF) {
+		Train readTrain;
+		file >> readTrain;
+		
+		// Если была получена ошибка при чтении, завершаем программу
+		if (file.fail()) {
+			exit(-1);
+		} else { // Иначе вставляем в элемент в список
+			insert(readTrain);
+		}
 	}
 }
