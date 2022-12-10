@@ -40,7 +40,7 @@ void List::insert(Train& _train) {
 void List::insert(Train& _train, uint index) {
 	// Если список пуст или индекс больше или равен размеру списка
 	// то используем метод вставки в конец списка
-	if (size == 0 || index + 1 >= size) {
+	if (size == 0 || index >= size) {
 		insert(_train);
 		return;
 	}
@@ -182,7 +182,7 @@ void List::print() {
 	Node* tail = head;
 	std::cout << "List:" << std::endl;
 	for (uint i = 0; i < size; i++) {
-		cout << "Element" << i << " ";
+		cout << "Element - " << i << "." << endl;
 		tail->train->print();
 		cout << endl;
 		tail = tail->next;
@@ -200,8 +200,9 @@ bool List::save(const char* fileName) {
 
 	// Пишем в файл до конца списка или до ошибки
 	Node* tail = head;
-	while (tail->next != nullptr && !file.fail()) {
-		file << tail->train;
+	while (tail != nullptr && !file.fail()) {
+		file << *(tail->train);
+		tail = tail->next;
 	}
 
 	file.close();
@@ -236,6 +237,7 @@ bool List::load(const char* fileName) {
 		
 		// Если была получена ошибка при чтении, завершаем программу
 		if (file.fail()) {
+			cout << "Fail to read from file" << endl;
 			exit(-1);
 		} else { // Иначе вставляем в элемент в список
 			insert(readTrain);
