@@ -20,7 +20,7 @@ List::~List() {
 }
 
 // Вставка в конец списка
-void List::insert(Product& _data) {
+void List::insert(const Product& _data) {
 	// Если список был пустым - вставляем первый элемент
 	if (size == 0) {
 		head = new Node(_data);
@@ -37,10 +37,10 @@ void List::insert(Product& _data) {
 }
 
 // Вставка в список по индексу
-void List::insert(Product& _data, size_t index) {
+void List::insert(const Product& _data, size_t index) {
 	// Если список пустой или индекс больше/равен размеру списка,
 	// то используем метод для вставки в конец списка
-	if (size == 0 || index + 1 >= size) {
+	if (size == 0 || index + 1 >= size) //TODO fails on index == -1{
 		this->insert(_data);
 		return;
 	}
@@ -124,10 +124,10 @@ void List::remove(size_t index) {
 	size--;
 }
 
-// Поиск элемента по полю через меню
-Product* List::find(ProductFieldName field) const {
-
-}
+//// Поиск элемента по полю через меню
+//Product* List::find(ProductFieldName field) const {
+//
+//}
 
 // Поиск элемента по индексу
 Product* List::find(size_t index) const {
@@ -138,7 +138,7 @@ Product* List::find(size_t index) const {
 
 	// Если индекс больше размера списка, возвращаем последний элемент
 	if (index + 1 > size) {
-		return &(last->data);
+		return (last->data);
 	}
 
 	// Доходим до нужного элемента и возвращаем его
@@ -147,7 +147,7 @@ Product* List::find(size_t index) const {
 		tail = tail->next;
 	}
 
-	return &(tail->data);
+	return (tail->data);
 }
 
 // Вывод списка
@@ -163,7 +163,7 @@ void List::output() const {
 	std::cout << "List:" << std::endl;
 	for (size_t i = 0; i < size; i++) {
 		std::cout << "#" << i << " ";
-		tail->data.output();
+		tail->data->output();
 		std::cout << "--------------------------------------" << std::endl;
 		tail = tail->next;
 	}

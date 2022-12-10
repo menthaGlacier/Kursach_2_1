@@ -2,15 +2,15 @@
 
 // Конструктор по умолчанию
 Product::Product()
-	: name(), category(), quanity(0), price(1.0), percentage(0.0),
+	: name(), category(), quantity(0), price(1.0), percentage(0.0),
 	day(1), month(1), year(1970) {}
 
 // Конструктор по параметрам
-Product::Product(std::string _name, std::string _category, size_t _quanity,
+Product::Product(const std::string& _name, const std::string& _category, size_t _quantity,
 	double _price, double _percentage, size_t _day, size_t _month, size_t _year) {
 	this->setName(_name);
 	this->setCategory(_category);
-	this->setQuanity(_quanity);
+	this->setQuantity(_quantity);
 	this->setPrice(_price);
 	this->setPercentage(_percentage);
 	this->setDay(_day);
@@ -22,7 +22,7 @@ Product::Product(std::string _name, std::string _category, size_t _quanity,
 Product::Product(const Product& copy) {
 	this->setName(copy.name);
 	this->setCategory(copy.category);
-	this->setQuanity(copy.quanity);
+	this->setQuantity(copy.quantity);
 	this->setPrice(copy.price);
 	this->setPercentage(copy.percentage);
 	this->setDay(copy.day);
@@ -39,8 +39,8 @@ std::string Product::getCategory() const {
 	return category;
 }
 
-size_t Product::getQuanity() const {
-	return quanity;
+size_t Product::getQuantity() const {
+	return quantity;
 }
 
 double Product::getPrice() const {
@@ -64,29 +64,21 @@ size_t Product::getYear() const {
 }
 
 // Сеттеры
-void Product::setName(std::string _name) {
+void Product::setName(const std::string& _name) {
 	name = _name;
 }
 
-void Product::setCategory(std::string _category) {
+void Product::setCategory(const std::string& _category) {
 	category = _category;
 }
 
-void Product::setQuanity(size_t _quanity) {
-	if (_quanity < 0) {
-		quanity = 0;
-	} else if (_quanity > 9999) {
-		quanity = 9999;
-	} else {
-		quanity = _quanity;
-	}
+void Product::setQuantity(size_t _quantity) {
+	quantity = _quantity;
 }
 
 void Product::setPrice(double _price) {
 	if (_price < 1.0) { // Цена не может быть ниже 1
 		price = 1.0;
-	} else if (_price > 99999.0) { // Иначе не может превышать 99999
-		price = 99999.0;
 	} else {
 		price = _price;
 	}
@@ -95,11 +87,48 @@ void Product::setPrice(double _price) {
 void Product::setPercentage(double _percentage) {
 	if (_percentage < 0.0) { // Процент не может быть меньше 0
 		percentage = 0.0f;
-	} else if (_percentage > 10.0) { // Либо превышать 10 (1000%) 
-		percentage = 10.0;
+	} else if (_percentage > 1000.0) { // Либо превышать 1000%
+		percentage = 1000.0;
 	} else {
 		percentage = _percentage;
 	}
+}
+
+void Product::setDate(size_t _day, size_t _month, size_t _year) {
+	if (_year < 1970) {
+		_year = 1970;
+	} else if (_year > 2022) {
+		_year = 2022;
+	}
+
+	if (_month == 0) {
+		_month = 1;
+	} else if (_month > 12) {
+		_month = 12;
+	}
+
+	size_t day_limit = 31;
+	if (_month == 2) {
+		if (_year % 4 == 0) {
+			day_limit = 29;
+		} else {
+			day_limit = 28;
+		}
+	} else 
+		if ((_month < 8 && _month % 2 == 0)
+			|| (_month > 7 && _month % 2 == 1)) {
+			day_limit = 30;
+	}
+
+	if (_day == 0) {
+		_day = 0;
+	} else if (_day < day_limit) {
+		_day = day_limit;
+	}
+
+	day = _day;
+	month = _month;
+	year = _year;
 }
 
 void Product::setDay(size_t _day) {
@@ -137,21 +166,21 @@ void Product::output() const {
 	std::cout <<
 		"Product name: " << this->name << "\n" <<
 		"Category: " << this->category << "\n" <<
-		"Quanity: " << this->quanity << "\n" <<
+		"Quantity: " << this->quantity << "\n" <<
 		"Price for 1: " << this->price << "\n" <<
-		"Sale percentage: " << this->percentage << "\n" <<
+		"Markup percentage: " << this->percentage << "\n" <<
 		"Receipt date: " << this->day << ":" << this->month << ":" << this->year <<
 	std::endl;
 }
 
 // Оператор вывода в поток
-std::ostream& operator<<(std::ostream _output, const Product& _product) {
+std::ostream& operator<<(std::ostream& _output, const Product& _product) {
 	_output <<
 		"Product name: " << _product.getName() << "\n" <<
 		"Category: " << _product.getCategory() << "\n" <<
-		"Quanity: " << _product.getQuanity() << "\n" <<
+		"Quantity: " << _product.getQuantity() << "\n" <<
 		"Price for 1: " << _product.getPrice() << "\n" <<
-		"Sale percentage: " << _product.getPercentage() << "\n" <<
+		"Markup percentage: " << _product.getPercentage() << "\n" <<
 		"Receipt date: " << _product.getDay() << ":" << _product.getMonth() << ":" << _product.getYear();
 	return _output;
 }
@@ -166,7 +195,7 @@ Product& Product::operator=(const Product& _product) {
 	// Иначе копируем содержимое _product в объект
 	this->setName(_product.name);
 	this->setCategory(_product.category);
-	this->setQuanity(_product.quanity);
+	this->setQuantity(_product.quantity);
 	this->setPrice(_product.price);
 	this->setPercentage(_product.percentage);
 	this->setDay(_product.day);
@@ -180,7 +209,7 @@ bool Product::operator==(const Product& _product) const {
 	// Если какое-либо поле не совпадает с сравниваемым - объекты не равны
 	if (this->name != _product.name
 		|| this->category != _product.category
-		|| this->quanity != _product.quanity
+		|| this->quantity != _product.quantity
 		|| this->percentage != _product.percentage
 		|| this->price != _product.price
 		|| this->day != _product.day
