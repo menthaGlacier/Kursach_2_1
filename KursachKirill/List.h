@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "Node.h"
 
@@ -24,11 +25,18 @@ public:
 	void remove();
 	void remove(uint index);
 
+	// Поиск элемента по разным полям
+	Train* find();
+
 	// Сортировка списка
 	void sort();
 
 	// Вывод списка
 	void print();
+
+	// Сохранение и загрузка списка в и из бинарного файла
+	bool save(const char* fileName);
+	bool load(const char* fileName);
 private:
 	Node* head; // Указатель на первый элемент
 	Node* last; // Указатель на последний элемент

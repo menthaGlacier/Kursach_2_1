@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -47,6 +48,10 @@ public:
 	bool operator==(const Train& train);
 	bool operator>(const Train& train);
 	bool operator<(const Train& train);
+
+	// Запись и чтение в файл
+	friend fstream& operator<<(fstream& file, const Train& train);
+	friend fstream& operator>>(fstream& file, Train& train);
 
 private:
 	uint trainNum;

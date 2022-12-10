@@ -5,10 +5,12 @@
 // Класс узла списка
 class Node {
 public:
-	// Конструктор по параметру
+	// Конструкторы и деструктор
+	Node();
 	Node(Train& _train);
+	~Node();
 private:
-	Train& train;
+	Train* train;
 	Node* next;
 	friend class List;
 };
