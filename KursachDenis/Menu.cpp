@@ -103,7 +103,7 @@ void Menu::actionAdd() {
 					return;
 				}
 			}
-			case '3': {//TODO INSORT
+			case '3': {
 				while (true) {
 					std::cout <<
 						">>>>>>>>>>Insort by:\n"
@@ -348,11 +348,26 @@ void Menu::actionSearch() {
 	}
 }
 
-void Menu::actionSave()
-{}
+void Menu::actionSave() {
+	std::cout << "Enter filename" << std::endl;
+	std::getline(std::cin, input_line);
+	if (!warehouse.save(input_line)) {
+		std::cout << "Error occured while saving" << std::endl;
+	} else {
+		std::cout << "Saved successfully" << std::endl;
+	}
+}
 
-void Menu::actionLoad()
-{}
+void Menu::actionLoad() {
+	std::cout << "Enter filename" << std::endl;
+	std::getline(std::cin, input_line);
+	if (!warehouse.load(input_line)) {
+		std::cout << "Error occured while loading" << std::endl;
+	}
+	else {
+		std::cout << "Loaded successfully" << std::endl;
+	}
+}
 
 Product Menu::inputProduct() {
 	std::string name, category;

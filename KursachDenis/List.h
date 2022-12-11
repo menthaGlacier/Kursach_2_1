@@ -18,6 +18,8 @@ public:
 
 	//Сортировка
 	void sort(ProductFieldName field, bool reverse = false);
+	bool save(std::string file_name);
+	bool load(std::string file_name);
 	void output() const;
 	size_t getSize() const;
 private:

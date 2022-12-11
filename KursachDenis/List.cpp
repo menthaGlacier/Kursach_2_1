@@ -408,6 +408,118 @@ void List::output() const {
 	}
 }
 
+bool List::save(std::string file_name)
+{
+	std::fstream file(file_name, std::ios::binary | std::ios::out);
+	if (!file.is_open()) { return false; }
+
+	for (Node* loading = head; loading != nullptr; loading = loading->next)
+	{
+		std::string str = loading->data->getName();
+		size_t size_value = str.size();
+
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+		file.write(str.c_str(), size_value);
+
+		str = loading->data->getCategory();
+		size_value = str.size();
+
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+		file.write(str.c_str(), size_value);
+
+		size_value = loading->data->getQuantity();
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+
+		size_value = loading->data->getDay();
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+
+		size_value = loading->data->getMonth();
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+
+		size_value = loading->data->getYear();
+		file.write(reinterpret_cast<const char*>(&size_value), sizeof(size_value));
+
+		double double_value = loading->data->getPrice();
+		file.write(reinterpret_cast<const char*>(&double_value), sizeof(double_value));
+
+		double_value = loading->data->getPercentage();
+		file.write(reinterpret_cast<const char*>(&double_value), sizeof(double_value));
+	}
+	file.close();
+	return true;
+}
+
+bool List::load(std::string file_name)
+{
+	std::fstream file(file_name, std::ios::binary | std::ios::in);
+	if (!file.is_open()) { return false; }
+
+	for (size_t i = 0; i < size; i++) {
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+	}
+	size = 0;
+	head = nullptr;
+	last = nullptr;
+
+	while(file.peek() != EOF && file.fail() != true)
+	{
+		std::string name, category;
+		size_t quantity, day, month, year;
+		size_t str_size;
+		double price, percentage;
+
+		file.read(reinterpret_cast<char*>(&str_size), sizeof(str_size));
+		if (str_size > 0) {
+			char* temp = new char[str_size];
+			file.read(temp, str_size);
+			name.assign(temp, str_size);
+			delete[] temp;
+		}
+
+		file.read(reinterpret_cast<char*>(&str_size), sizeof(str_size));
+		if (str_size > 0) {
+			char* temp = new char[str_size];
+			file.read(temp, str_size);
+			category.assign(temp, str_size);
+			delete[] temp;
+		}
+
+		file.read(reinterpret_cast<char*>(&quantity), sizeof(quantity));
+		file.read(reinterpret_cast<char*>(&day), sizeof(day));
+		file.read(reinterpret_cast<char*>(&month), sizeof(month));
+		file.read(reinterpret_cast<char*>(&year), sizeof(year));
+		file.read(reinterpret_cast<char*>(&price), sizeof(price));
+		file.read(reinterpret_cast<char*>(&percentage), sizeof(percentage));
+		
+		if (file.fail() == true) {
+			for (size_t i = 0; i < size; i++) {
+				Node* temp = head;
+				head = head->next;
+				delete temp;
+			}
+			size = 0;
+			head = nullptr;
+			last = nullptr;
+			return false;
+		}
+		if (last) {
+			last->next = new Node(Product(name, category, quantity, price, percentage, day, month, year));
+			last->next->prev = last;
+			last = last->next;
+		}
+		else {
+			last = new Node(Product(name, category, quantity, price, percentage, day, month, year));
+			head = last;
+		}
+		size++;
+	}
+
+	file.close();
+	return true;
+}
+
 size_t List::getSize() const {
 	return size;
 }
