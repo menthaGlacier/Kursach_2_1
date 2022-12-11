@@ -148,8 +148,8 @@ Train* find() {
 
 }
 
-// Сортировка списка
-void List::sort() {
+// Упорядочивание списка
+void List::order() {
 	// Используем пузырьковую сортировку
 	for (uint i = 0; i < size; i++) {
 		Node* tail = head;
@@ -174,13 +174,13 @@ void List::sort() {
 void List::print() {
 	// Если список пустой - сообщаем и выходим
 	if (size == 0) {
-		cout << "List is empty" << std::endl;
+		cout << "List is empty" << endl;
 		return;
 	}
 
 	// Выводим все элементы списка
 	Node* tail = head;
-	std::cout << "List:" << std::endl;
+	cout << "List:" << endl;
 	for (uint i = 0; i < size; i++) {
 		cout << "Element - " << i << "." << endl;
 		tail->train->print();
