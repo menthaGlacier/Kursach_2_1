@@ -40,7 +40,7 @@ void List::insert(const Product& _data) {
 void List::insert(const Product& _data, size_t index) {
 	// Если список пустой или индекс больше/равен размеру списка,
 	// то используем метод для вставки в конец списка
-	if (size == 0 || index + 1 >= size) {	//TODO FAILS
+	if (size == 0 || index >= size) {
 		this->insert(_data);
 		return;
 	}
@@ -54,18 +54,18 @@ void List::insert(const Product& _data, size_t index) {
 		return;
 	}
 
-	// Доходим до элемента, предыдущего перед нужным
-	Node* tail = head;
-	for (size_t i = 0; i + 1 < index; i++) {
+	// Доходим до нужного места
+	Node* tail = head->next;
+	for (size_t i = 1; i < index; i++) {
 		tail = tail->next;
 	}
 
 	// Вставляем новый элемент на нужное место, перевязываем указатели
 	Node* temp = new Node(_data);
-	temp->next = tail->next;
-	temp->prev = tail;
-	tail->next->prev = temp;
-	tail->next = temp;
+	temp->next = tail;
+	temp->prev = tail->prev;
+	tail->prev->next = temp;
+	tail->prev = temp;
 	size++;
 }
 
@@ -86,21 +86,22 @@ void List::remove() {
 	}
 
 	// Удаляем последний элемент
-	Node* temp = last;
 	last = last->prev;
-	delete temp;
+	delete last->next;
+	last->next = nullptr;
 	size--;
 }
 
 // Удаление элемента по индексу
 void List::remove(size_t index) {
 	// Если список пустой, только с одним элементом, либо индекс больше/равен
-	// размеру списка, используем метод удаления элемента в конце списка
-	if (size == 0 || size == 1 || index + 1 >= size) {
+	// индексу последнего элемента списка,
+	// используем метод удаления элемента в конце списка
+	if (size <= 1 || index >= size - 1) {
 		this->remove();
 		return;
 	}
-	
+
 	// Удаление первого элемента
 	if (index == 0) {
 		head = head->next;
@@ -110,17 +111,16 @@ void List::remove(size_t index) {
 		return;
 	}
 
-	// Доходим до элемента, предыдущего перед нужным
-	Node* tail = head;
-	for (size_t i = 0; i + 1 < index; i++) {
+	// Доходим до нужного элемента
+	Node* tail = head->next;
+	for (size_t i = 1; i < index; i++) {
 		tail = tail->next;
 	}
 
 	// Удаляем элемент на нужном месте, перевязываем указатели
-	Node* temp = tail->next;
-	tail->next = tail->next->next;
-	tail->next->prev = tail;
-	delete temp;
+	tail->next->prev = tail->prev;
+	tail->prev->next= tail->next;
+	delete tail;
 	size--;
 }
 

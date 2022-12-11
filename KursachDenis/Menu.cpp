@@ -120,6 +120,11 @@ void Menu::actionAdd() {
 }
 
 void Menu::actionRemove() {
+	if (warehouse.getSize() == 0) {
+		std::cout << "List is empty" << std::endl;
+		return;
+	}
+
 	while (true) {
 		std::cout <<
 			">>>>>>>>>>Where to delete product:\n"
@@ -137,12 +142,29 @@ void Menu::actionRemove() {
 
 		switch (input_line[0]) {
 			case '1': {
-
-				break;
+				warehouse.remove();
+				return;
 			}
 			case '2': {
-
-				break;
+				while (true) {
+					size_t position;
+					std::cout << "Enter position" << std::endl;
+					try {
+						std::getline(std::cin, input_line);
+						position = std::stoul(input_line);
+					}
+					catch (...) {
+						std::cout << "Error occured. Try again" << std::endl;
+						continue;
+					}
+					if (position >= warehouse.getSize()) {
+						std::cout << "No element with such position" << std::endl;
+					}
+					else {
+						warehouse.remove(position);
+					}
+					return;
+				}
 			}
 			case 'b':
 			case 'B': {
