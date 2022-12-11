@@ -104,7 +104,60 @@ void Menu::actionAdd() {
 				}
 			}
 			case '3': {//TODO INSORT
+				while (true) {
+					std::cout <<
+						">>>>>>>>>>Insort by:\n"
+						"[1] Product name\n"
+						"[2] Category\n"
+						"[3] Quantity\n"
+						"[4] Date\n"
+						"[5] Price\n"
+						"[6] Markup percentage\n"
+						"[B] Go back\n"
+						"Choise: "
+						<< std::flush;
 
+					std::getline(std::cin, input_line);
+					if (input_line.size() != 1) {
+						std::cout << "Wrong input" << std::endl;
+						continue;
+					}
+
+					switch (input_line[0]) {
+						case '1': {
+							warehouse.insort(ProductFieldName::Name, inputProduct());
+							return;
+						}
+						case '2': {
+							warehouse.insort(ProductFieldName::Category, inputProduct());
+							return;
+						}
+						case '3': {
+							warehouse.insort(ProductFieldName::Quantity, inputProduct());
+							return;
+						}
+						case '4': {
+							warehouse.insort(ProductFieldName::Date, inputProduct());
+							return;
+						}
+						case '5': {
+							warehouse.insort(ProductFieldName::Price, inputProduct());
+							return;
+						}
+						case '6': {
+							warehouse.insort(ProductFieldName::Percentage, inputProduct());
+							return;
+						}
+						case 'b':
+						case 'B': {
+							return;
+						}
+						default: {
+							std::cout << "Unknown action" << std::endl;
+							break;
+						}
+					}
+				}
 				break;
 			}
 			case 'b':

@@ -10,6 +10,7 @@ public:
 
 	void insert(const Product& _data);
 	void insert(const Product& _data, size_t index);
+	void insort(ProductFieldName field, const Product& _data);
 	void remove();
 	void remove(size_t index);
 	//Product* find(ProductFieldName field) const;

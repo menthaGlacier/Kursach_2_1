@@ -69,6 +69,167 @@ void List::insert(const Product& _data, size_t index) {
 	size++;
 }
 
+void List::insort(ProductFieldName field, const Product& _data)
+{
+	if (size <= 1) {
+		this->insert(_data);
+		return;
+	}
+
+	bool reverse = false;
+	switch (field) {
+		case ProductFieldName::Name: {
+			if (head->data->getName() > head->next->data->getName()) {
+				reverse = true;
+			}
+			break;
+		}
+		case ProductFieldName::Category: {
+			if (head->data->getCategory() > head->next->data->getCategory()) {
+				reverse = true;
+			}
+			break;
+		}
+		case ProductFieldName::Quantity: {
+			if (head->data->getQuantity() > head->next->data->getQuantity()) {
+				reverse = true;
+			}
+			break;
+		}
+		case ProductFieldName::Price: {
+			if (head->data->getPrice() > head->next->data->getPrice()) {
+				reverse = true;
+			}
+			break;
+		}
+		case ProductFieldName::Percentage: {
+			if (head->data->getPercentage() > head->next->data->getPercentage()) {
+				reverse = true;
+			}
+			break;
+		}
+		case ProductFieldName::Date: {
+			if (head->data->getYear() > head->next->data->getYear())
+				reverse = true;
+			else 	if (head->data->getYear() == head->next->data->getYear())
+				if (head->data->getMonth() > head->next->data->getMonth())
+					reverse = true;
+				else if (head->data->getMonth() == head->next->data->getMonth())
+					if (head->data->getDay() > head->next->data->getDay())
+						reverse = true;
+			break;
+		}
+	}
+
+	Node* compared = head, * temp = new Node(_data);
+
+	while (compared != nullptr) {
+		bool found = false;
+		switch (field) {
+			case ProductFieldName::Name: {
+				if (!reverse) {
+					if (_data.getName() < compared->data->getName()) {
+						found = true; }
+				} else {
+					if (_data.getName() > compared->data->getName()) {
+						found = true; }
+				}
+				break;
+			}
+			case ProductFieldName::Category: {
+				if (!reverse) {
+					if (_data.getCategory() < compared->data->getCategory()) {
+						found = true;
+					}
+				}
+				else {
+					if (_data.getCategory() > compared->data->getCategory()) {
+						found = true;
+					}
+				}
+				break;
+			}
+			case ProductFieldName::Quantity: {
+				if (!reverse) {
+					if (_data.getQuantity() < compared->data->getQuantity()) {
+						found = true;
+					}
+				}
+				else {
+					if (_data.getQuantity() > compared->data->getQuantity()) {
+						found = true;
+					}
+				}
+				break;
+			}
+			case ProductFieldName::Price: {
+				if (!reverse) {
+					if (_data.getPrice() < compared->data->getPrice()) {
+						found = true;
+					}
+				}
+				else {
+					if (_data.getPrice() > compared->data->getPrice()) {
+						found = true;
+					}
+				}
+				break;
+			}
+			case ProductFieldName::Percentage: {
+				if (!reverse) {
+					if (_data.getPercentage() < compared->data->getPercentage()) {
+						found = true;
+					}
+				}
+				else {
+					if (_data.getPercentage() > compared->data->getPercentage()) {
+						found = true;
+					}
+				}
+				break;
+			}
+			case ProductFieldName::Date: {
+				if (!reverse) {
+					if (_data.getYear() < compared->data->getYear())
+						found = true;
+					else 	if (_data.getYear() == compared->data->getYear())
+						if (_data.getMonth() < compared->data->getMonth())
+							found = true;
+						else if (_data.getMonth() == compared->data->getMonth())
+							if (_data.getDay() < compared->data->getDay())
+								found = true;
+				} else {
+					if (_data.getYear() > compared->data->getYear())
+						found = true;
+					else 	if (_data.getYear() == compared->data->getYear())
+						if (_data.getMonth() > compared->data->getMonth())
+							found = true;
+						else if (_data.getMonth() == compared->data->getMonth())
+							if (_data.getDay() > compared->data->getDay())
+								found = true;
+				}
+				break;
+			}
+		}
+		if (found) { break; }
+		compared = compared->next;
+	}
+
+	if (compared != nullptr) {
+		if (compared->prev) compared->prev->next = temp;
+		temp->prev = compared->prev;
+		temp->next = compared;
+		compared->prev = temp;
+		if (compared == head) head = temp;
+	} else {
+		last->next = temp;
+		temp->prev = last;
+		temp->next = nullptr;
+		last = temp;
+	}
+	size++;
+}
+
 // Удаление элемента с конца списка
 void List::remove() {
 	// Если список пустой - выходим
