@@ -5,10 +5,10 @@
 
 // Класс узла (элемента) списка
 class Node {
-public:
-	Node(); // Конструктор по умолчанию
-	Node(const Product& _data);//Инициализирующий конструктор
 private:
+	Node() = delete; // Конструктор по умолчанию запрещён
+	Node(const Product& _data);//Инициализирующий конструктор
+
 	Product* data;
 	Node* prev, *next;
 	friend class List;

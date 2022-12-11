@@ -12,7 +12,7 @@ void Menu::launch() {
 			"[6] Save list to file\n"
 			"[7] Load list from file\n"
 			"[Q] Quit\n"
-			"Choose your action: "
+			"Choise: "
 		<< std::flush;
 
 		std::getline(std::cin, input_line);
@@ -158,18 +158,16 @@ void Menu::actionRemove() {
 
 void Menu::actionSort()
 {
-	while (true) {
+	bool reverse = false;
+	while (true)
+	{
 		std::cout <<
-			">>>>>>>>>>Sort by:\n"
-			"[1] Product name\n"
-			"[2] Category\n"
-			"[3] Quantity\n"
-			"[4] Date\n"
-			"[5] Price\n"
-			"[6] Markup percentage\n"
+			">>>>>>>>>>Sort:\n"
+			"[1] In ascending order\n"
+			"[2] In descending order\n"
 			"[B] Go back\n"
 			"Choise: "
-		<< std::flush;
+			<< std::flush;
 
 		std::getline(std::cin, input_line);
 		if (input_line.size() != 1) {
@@ -179,27 +177,11 @@ void Menu::actionSort()
 
 		switch (input_line[0]) {
 			case '1': {
-
+				reverse = false;
 				break;
 			}
 			case '2': {
-
-				break;
-			}
-			case '3': {
-
-				break;
-			}
-			case '4': {
-
-				break;
-			}
-			case '5': {
-
-				break;
-			}
-			case '6': {
-
+				reverse = true;
 				break;
 			}
 			case 'b':
@@ -208,11 +190,65 @@ void Menu::actionSort()
 			}
 			default: {
 				std::cout << "Unknown action" << std::endl;
-				break;
+				continue;
+			}
+		}
+
+		while (true) {
+			std::cout <<
+				">>>>>>>>>>Sort by:\n"
+				"[1] Product name\n"
+				"[2] Category\n"
+				"[3] Quantity\n"
+				"[4] Date\n"
+				"[5] Price\n"
+				"[6] Markup percentage\n"
+				"[B] Go back\n"
+				"Choise: "
+				<< std::flush;
+
+			std::getline(std::cin, input_line);
+			if (input_line.size() != 1) {
+				std::cout << "Wrong input" << std::endl;
+				continue;
+			}
+
+			switch (input_line[0]) {
+				case '1': {
+					warehouse.sort(ProductFieldName::Name, reverse);
+					return;
+				}
+				case '2': {
+					warehouse.sort(ProductFieldName::Category, reverse);
+					return;
+				}
+				case '3': {
+					warehouse.sort(ProductFieldName::Quantity, reverse);
+					return;
+				}
+				case '4': {
+					warehouse.sort(ProductFieldName::Date, reverse);
+					return;
+				}
+				case '5': {
+					warehouse.sort(ProductFieldName::Price, reverse);
+					return;
+				}
+				case '6': {
+					warehouse.sort(ProductFieldName::Percentage, reverse);
+					return;
+				}
+				case 'b':
+				case 'B': {
+					return;
+				}
+				default: {
+					std::cout << "Unknown action" << std::endl;
+					break;
+				}
 			}
 		}
 	}
-
 }
 
 void Menu::actionSearch() {
@@ -292,7 +328,8 @@ Product Menu::inputProduct() {
 			"\n[1] Yes"
 			"\n[2] No"
 			"\nChoise: "
-			<< std::endl;
+		<< std::flush;
+
 		while (true) {
 			std::getline(std::cin, input_line);
 			if (input_line.size() == 1) {

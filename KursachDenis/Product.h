@@ -6,7 +6,7 @@
 // поля для сортировки/поиска
 enum class ProductFieldName {
 	Name, Category, Quantity, Price,
-	Percentage, Day, Month, Year
+	Percentage, Date
 };
 
 // Класс продукта справочника склада

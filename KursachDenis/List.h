@@ -14,6 +14,9 @@ public:
 	void remove(size_t index);
 	//Product* find(ProductFieldName field) const;
 	Product* find(size_t index) const;
+
+	//Сортировка
+	void sort(ProductFieldName field, bool reverse = false);
 	void output() const;
 	size_t getSize() const;
 private:

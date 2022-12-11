@@ -13,9 +13,7 @@ Product::Product(const std::string& _name, const std::string& _category, size_t 
 	this->setQuantity(_quantity);
 	this->setPrice(_price);
 	this->setPercentage(_percentage);
-	this->setDay(_day);
-	this->setMonth(_month);
-	this->setYear(_year);
+	this->setDate(_day, _month, _year);
 }
 
 // Конструктор копирования
@@ -25,9 +23,7 @@ Product::Product(const Product& copy) {
 	this->setQuantity(copy.quantity);
 	this->setPrice(copy.price);
 	this->setPercentage(copy.percentage);
-	this->setDay(copy.day);
-	this->setMonth(copy.month);
-	this->setYear(copy.year);
+	this->setDate(copy.day, copy.month, copy.year);
 }
 
 // Геттеры
@@ -97,8 +93,8 @@ void Product::setPercentage(double _percentage) {
 void Product::setDate(size_t _day, size_t _month, size_t _year) {
 	if (_year < 1970) {
 		_year = 1970;
-	} else if (_year > 2022) {
-		_year = 2022;
+	} else if (_year > 2038) {
+		_year = 2038;
 	}
 
 	if (_month == 0) {
@@ -122,7 +118,7 @@ void Product::setDate(size_t _day, size_t _month, size_t _year) {
 
 	if (_day == 0) {
 		_day = 0;
-	} else if (_day < day_limit) {
+	} else if (_day > day_limit) {
 		_day = day_limit;
 	}
 
@@ -164,24 +160,24 @@ void Product::setYear(size_t _year) {
 // Метод вывода
 void Product::output() const {
 	std::cout <<
-		"Product name: " << this->name << "\n" <<
-		"Category: " << this->category << "\n" <<
-		"Quantity: " << this->quantity << "\n" <<
-		"Price for 1: " << this->price << "\n" <<
-		"Markup percentage: " << this->percentage << "\n" <<
-		"Receipt date: " << this->day << ":" << this->month << ":" << this->year <<
-	std::endl;
+		"Product name: " << this->name <<
+		"\nCategory: " << this->category <<
+		"\nQuantity: " << this->quantity <<
+		"\nPrice for 1: " << this->price <<
+		"\nMarkup percentage: " << this->percentage <<
+		"\nReceipt date: " << this->day << "." << this->month << "." << this->year
+	<<	std::flush;
 }
 
 // Оператор вывода в поток
 std::ostream& operator<<(std::ostream& _output, const Product& _product) {
 	_output <<
-		"Product name: " << _product.getName() << "\n" <<
-		"Category: " << _product.getCategory() << "\n" <<
-		"Quantity: " << _product.getQuantity() << "\n" <<
-		"Price for 1: " << _product.getPrice() << "\n" <<
-		"Markup percentage: " << _product.getPercentage() << "\n" <<
-		"Receipt date: " << _product.getDay() << ":" << _product.getMonth() << ":" << _product.getYear();
+		"Product name: " << _product.name <<
+		"\nCategory: " << _product.category <<
+		"\nQuantity: " << _product.quantity <<
+		"\nPrice for 1: " << _product.price <<
+		"\nMarkup percentage: " << _product.percentage <<
+		"\nReceipt date: " << _product.day << "." << _product.month << "." << _product.year;
 	return _output;
 }
 
@@ -198,9 +194,7 @@ Product& Product::operator=(const Product& _product) {
 	this->setQuantity(_product.quantity);
 	this->setPrice(_product.price);
 	this->setPercentage(_product.percentage);
-	this->setDay(_product.day);
-	this->setMonth(_product.month);
-	this->setYear(_product.year);
+	this->setDate(_product.day, _product.month, _product.year);
 	return *this;
 }
 
@@ -208,13 +202,13 @@ Product& Product::operator=(const Product& _product) {
 bool Product::operator==(const Product& _product) const {
 	// Если какое-либо поле не совпадает с сравниваемым - объекты не равны
 	if (this->name != _product.name
-		|| this->category != _product.category
-		|| this->quantity != _product.quantity
-		|| this->percentage != _product.percentage
-		|| this->price != _product.price
-		|| this->day != _product.day
-		|| this->month != _product.month
-		|| this->year != _product.year) {
+	|| this->category != _product.category
+	|| this->quantity != _product.quantity
+	|| this->percentage != _product.percentage
+	|| this->price != _product.price
+	|| this->day != _product.day
+	|| this->month != _product.month
+	|| this->year != _product.year) {
 		return false;
 	}
 
