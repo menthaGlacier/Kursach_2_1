@@ -73,7 +73,7 @@ void List::insertOrdered(Train& _train) {
 	insert(_train);
 
 	// Сортируем список
-	sort();
+	order();
 }
 
 // Удаление с конца списка
@@ -137,8 +137,8 @@ void List::remove(uint index) {
 }
 
 // Поиск элемента по разным полям через меню
-Train* find() {
-	cout << "Select the field you want to find element by:" << endl;
+Train* search() {
+	cout << "Select the field you want to search element by:" << endl;
 	cout << "1 - Train number" << endl << "2 - Working day of weeks" << endl
 		<< "3 - Departure time" << endl << "4 - Travel time" << endl
 		<< "5 - Departure station" << endl << "6 - Destination station" << endl
@@ -243,4 +243,9 @@ bool List::load(const char* fileName) {
 			insert(readTrain);
 		}
 	}
+}
+
+// Получение размера списка
+uint List::getSize() {
+	return size;
 }

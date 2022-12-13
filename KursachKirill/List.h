@@ -26,7 +26,7 @@ public:
 	void remove(uint index);
 
 	// Поиск элемента по разным полям
-	Train* find();
+	Train* search();
 
 	// Упорядочивание списка
 	void order();
@@ -37,6 +37,9 @@ public:
 	// Сохранение и загрузка списка в и из бинарного файла
 	bool save(const char* fileName);
 	bool load(const char* fileName);
+
+	// Получение размера списка
+	size_t getSize();
 private:
 	Node* head; // Указатель на первый элемент
 	Node* last; // Указатель на последний элемент

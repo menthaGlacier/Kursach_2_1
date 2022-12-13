@@ -1,8 +1,9 @@
 #include "MainMenu.h"
 
+//
 void MainMenu::start() {
 	while (true) {
-		// Выводим список достпуныз действий
+		// Выводим список достпуных действий
 		cout << "-------------Menu-------------" << endl;
 		cout << "1 - Add a train to the schedule list" << endl
 			<< "2 - Remove a train from the schedule list" << endl
@@ -52,26 +53,101 @@ void MainMenu::start() {
 	}
 }
 
+//
 void MainMenu::scheduleInsert() {
+	// Выводим список достпуных действий
+	cout << "1 - Add at the end" << endl
+		<< "2 - Add into pos" << endl
+		<< "3 - Add keeping order" << endl;
+	cout << "Input: ";
 
+	Train inputTrain;
+	while (true) {
+		// Получаем ввод и проверяем его
+		getline(cin, input);
+		if (input.length() != 1) {
+			cout << "Unknown input. Repeat" << endl;
+			continue;
+		}
+
+		switch (input[0]) {
+		case '1':
+			inputTrain = enterTrain();
+			schedule.insert(inputTrain);
+			return;
+		case '2':
+			while (true) {
+				cout << "Enter pos" << endl;
+				getline(cin, input);
+				uint pos = stoul(input);
+
+				if (pos >= schedule.getSize()) {
+					cout << "Input is incorrect" << endl;
+				} else {
+					inputTrain = enterTrain();
+					schedule.insert(inputTrain, pos);
+					return;
+				}
+			}
+		}
+	}
 }
 
+//
 void MainMenu::scheduleRemove() {
+	// Выводим список достпуных действий
+	cout << "1 - Remove from the end" << endl
+		<< "2 - Remove from pos" << endl;
+	cout << "Input: ";
 
+	while (true) {
+		// Получаем ввод и проверяем его
+		getline(cin, input);
+		if (input.length() != 1) {
+			cout << "Unknown input. Repeat" << endl;
+			continue;
+		}
+	}
+
+	switch (input[0]) {
+	case '1':
+		schedule.remove();
+		return;
+	case '2':
+		while (true) {
+			cout << "Enter pos" << endl;
+			getline(cin, input);
+			uint pos = stoul(input);
+
+			if (pos >= schedule.getSize()) {
+				cout << "Input is incorrect" << endl;
+			} else {
+				schedule.remove(pos);
+				return;
+			}
+		}
+	default:
+		std::cout << "Unknown action" << std::endl;
+		break;
+	}
 }
 
+//
 void MainMenu::schedulePrint() {
-
+	schedule.print();
 }
 
+//
 void MainMenu::scheduleSearch() {
-
+	schedule.search();
 }
 
+//
 void MainMenu::scheduleOrder() {
-
+	schedule.order();
 }
 
+//
 void MainMenu::scheduleSave() {
 	cout << "Your file name: ";
 	getline(cin, input);
@@ -82,6 +158,7 @@ void MainMenu::scheduleSave() {
 	}
 }
 
+//
 void MainMenu::scheduleLoad() {
 	cout << "Your file name: ";
 	getline(cin, input);
@@ -89,5 +166,58 @@ void MainMenu::scheduleLoad() {
 		cout << "Schedule was not loaded from file" << endl;
 	} else {
 		cout << "Load schedule from " << input << endl;
+	}
+}
+
+Train MainMenu::enterTrain() {
+	uint trainNum;
+	string dayOfWeeks;
+	uint startHour, startMinute;
+	uint travelHours, travelMinutes;
+	uint start, stop;
+	vector<uint> transit;
+	uint tempTransit;
+
+	cout << "Any wrong input will be changes to defaults" << endl;
+	while (true) {
+		cout << "Enter train number" << endl;
+		getline(cin, input);
+		trainNum = std::stoul(input);
+
+		cout << "Enter working day of weeks" << endl;
+		getline(cin, input);
+		dayOfWeeks = input;
+
+		cout << "Enter departure hour" << endl;
+		getline(cin, input);
+		startHour = stoul(input);
+
+		cout << "Enter departure minute" << endl;
+		getline(cin, input);
+		startMinute = stod(input);
+
+		cout << "Enter travel hours" << endl;
+		getline(cin, input);
+		travelHours = stoul(input);
+
+		cout << "Enter travel minutes" << endl;
+		getline(cin, input);
+		travelMinutes = stod(input);
+
+		cout << "Enter departure station" << endl;
+		getline(cin, input);
+		start = stoul(input);
+
+		cout << "Enter destination station" << endl;
+		getline(cin, input);
+		stop = stoul(input);
+
+		cout << "Enter transit stations (0 to end)" << endl;
+		while (cin >> tempTransit && tempTransit != 0) {
+			transit.push_back(tempTransit);
+		}
+
+		return Train (trainNum, dayOfWeeks, startHour, startMinute,
+			travelHours, travelMinutes, start, stop, transit);
 	}
 }

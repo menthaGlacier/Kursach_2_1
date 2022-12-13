@@ -7,8 +7,7 @@
 
 using namespace std;
 
-class MainMenu
-{
+class MainMenu {
 public:
 	void start(); // Запуск меню
 private:
@@ -19,6 +18,7 @@ private:
 	void scheduleOrder(); // Упорядочивание
 	void scheduleSave(); // Сохранение в файле
 	void scheduleLoad(); // Загрузка из файла
+	Train enterTrain(); // Ввод элемента
 
 	List schedule; // Расписание поездов
 	string input; // Строка для считывания ввода
