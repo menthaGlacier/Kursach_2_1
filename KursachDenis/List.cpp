@@ -285,21 +285,65 @@ void List::remove(size_t index) {
 	size--;
 }
 
-//// Поиск элемента по полю через меню
-//Product* List::find(ProductFieldName field) const {
-//
-//}
+// Поиск элемента по полю через меню
+void List::find(ProductFieldName field, const Product& _data) const {
+	Node* current = head;
+	for (size_t i = 0; current != nullptr; i++, current = current->next) {
+		switch (field) {
+		case ProductFieldName::Name:
+			if (current->data->getName() == _data.getName()) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		case ProductFieldName::Category:
+			if (current->data->getCategory() == _data.getCategory()) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		case ProductFieldName::Quantity:
+			if (current->data->getQuantity() == _data.getQuantity()) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		case ProductFieldName::Price:
+			if (current->data->getPrice() == _data.getPrice()) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		case ProductFieldName::Percentage:
+			if (current->data->getPercentage() == _data.getPercentage()) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		case ProductFieldName::Date:
+			if ((current->data->getDay() == _data.getDay())
+				&& (current->data->getMonth() == _data.getMonth())
+				&& (current->data->getYear() == _data.getYear())) {
+				std::cout << "#" << i << " ";
+				current->data->output();
+				std::cout << std::endl;
+			}
+			break;
+		}
+
+	}
+}
 
 // Поиск элемента по индексу
 Product* List::find(size_t index) const {
 	// Если список пуст - возвращаем пустой nullptr
-	if (size == 0) {
+	if (size == 0 || index >= size) {
 		return nullptr;
-	}
-
-	// Если индекс больше размера списка, возвращаем последний элемент
-	if (index + 1 > size) {
-		return (last->data);
 	}
 
 	// Доходим до нужного элемента и возвращаем его
@@ -408,7 +452,7 @@ void List::output() const {
 	}
 }
 
-bool List::save(std::string file_name)
+bool List::save(const std::string& file_name)
 {
 	std::fstream file(file_name, std::ios::binary | std::ios::out);
 	if (!file.is_open()) { return false; }
@@ -449,7 +493,7 @@ bool List::save(std::string file_name)
 	return true;
 }
 
-bool List::load(std::string file_name)
+bool List::load(const std::string& file_name)
 {
 	std::fstream file(file_name, std::ios::binary | std::ios::in);
 	if (!file.is_open()) { return false; }

@@ -13,13 +13,13 @@ public:
 	void insort(ProductFieldName field, const Product& _data);
 	void remove();
 	void remove(size_t index);
-	//Product* find(ProductFieldName field) const;
+	void find(ProductFieldName field, const Product& _data) const;
 	Product* find(size_t index) const;
 
 	//Сортировка
 	void sort(ProductFieldName field, bool reverse = false);
-	bool save(std::string file_name);
-	bool load(std::string file_name);
+	bool save(const std::string& file_name);
+	bool load(const std::string& file_name);
 	void output() const;
 	size_t getSize() const;
 private:

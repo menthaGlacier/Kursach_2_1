@@ -13,7 +13,7 @@ enum class ProductFieldName {
 class Product {
 public:
 	// Конструкторы
-	Product();
+	Product();	//
 	Product(const std::string& _name, const std::string& _category, size_t _quantity, double _price,
 		double _percentage, size_t _day, size_t _month, size_t _year);
 	Product(const Product& copy);
@@ -50,8 +50,8 @@ public:
 	bool operator<(const Product& _product) const;
 
 private:
-	std::string name, category;
-	size_t quantity;
-	double price, percentage;
-	size_t day, month, year;
+	std::string name, category;	//наименование товара и категория
+	size_t quantity;	//количество товара
+	double price, percentage;	//цена и процент торговой надбавки
+	size_t day, month, year;//день, месяц, год поступления
 };
