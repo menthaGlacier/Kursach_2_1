@@ -89,6 +89,14 @@ void MainMenu::scheduleInsert() {
 					return;
 				}
 			}
+
+			break;
+		case '3':
+			inputTrain = enterTrain();
+			schedule.insertOrdered(inputTrain);
+		default:
+			std::cout << "Unknown action" << std::endl;
+			break;
 		}
 	}
 }
