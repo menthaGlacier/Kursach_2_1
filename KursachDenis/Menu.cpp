@@ -11,6 +11,7 @@ void Menu::launch() {
 			"[5] Search in list\n"
 			"[6] Save list to file\n"
 			"[7] Load list from file\n"
+			"[8] Calculate invoice\n"
 			"[Q] Quit\n"
 			"Choise: "
 		<< std::flush;
@@ -50,6 +51,10 @@ void Menu::launch() {
 				actionLoad();
 				break;
 			}
+			case '8': {
+				actionInvoice();
+				break;
+			}
 			case 'q':
 			case 'Q': {
 				return;
@@ -60,8 +65,6 @@ void Menu::launch() {
 			}
 		}
 	}
-
-
 }
 
 void Menu::actionAdd() {
@@ -617,6 +620,136 @@ Product Menu::inputProduct() {
 				if (input_line[0] == '1') {
 					return product; }
 				else if (input_line[0] == '2') { break; }
+			}
+		}
+	}
+}
+
+void Menu::actionInvoice()
+{
+	if (warehouse.getSize() == 0) {
+		std::cout << "List is empty" << std::endl;
+		return;
+	}
+
+	List invoice;
+	for (size_t i = 0; i < warehouse.getSize(); i++) {
+		Product* product = warehouse.find(i);
+		invoice.insert(*product);
+		invoice.find(i)->setQuantity(0);
+	}
+	size_t index = 0;
+	Product* warehouse_product = warehouse.find(index),
+		* invoice_product = invoice.find(index);
+
+	while (true) {
+		std::cout <<
+			"\nCurrent product:"
+			"\n#" << index << " " << *warehouse_product << 
+			"\n[1] Next product"
+			"\n[2] Previous product"
+			"\n[3] Add to invoice"
+			"\n[4] Remove from invoice"
+			"\n[5] Show current invoice"
+			"\n[6] Sell and go back"
+		<<std::endl;
+
+		std::getline(std::cin, input_line);
+		if (input_line.size() != 1) {
+			std::cout << "Wrong input" << std::endl;
+			continue;
+		}
+
+		switch (input_line[0]) {
+			case '1': {
+				if (warehouse.getSize() == index + 1) {
+					index = 0;
+				} else {
+					index++;
+				}
+
+				warehouse_product = warehouse.find(index);
+				invoice_product = invoice.find(index);
+				continue;
+			}
+			case '2': {
+				if (index == 0) {
+					index = warehouse.getSize() - 1;
+				} else {
+					index--;
+				}
+
+				warehouse_product = warehouse.find(index);
+				invoice_product = invoice.find(index);
+				continue;
+			}
+			case '3': {
+				std::cout << "Enter amount" << std::endl;
+				std::getline(std::cin, input_line);
+
+				try {
+					size_t amount = std::stoul(input_line);
+
+					if (amount > warehouse_product->getQuantity()) {
+						std::cout << "There's not such amount of product in warehouse" << std::endl;
+					} else {
+						warehouse_product->setQuantity(warehouse_product->getQuantity() - amount);
+						invoice_product->setQuantity(invoice_product->getQuantity() + amount);
+					}
+				}
+				catch (...) {
+					std::cout << "Error occured. Try again" << std::endl;
+				}
+
+				continue;
+			}
+			case '4': {
+				std::cout << "Enter amount" << std::endl;
+				std::getline(std::cin, input_line);
+
+				try {
+					size_t amount = std::stoul(input_line);
+
+					if (amount > invoice_product->getQuantity()) {
+						std::cout << "There's not such amount of product in invoice" << std::endl;
+					}
+					else {
+						warehouse_product->setQuantity(warehouse_product->getQuantity() + amount);
+						invoice_product->setQuantity(invoice_product->getQuantity() - amount);
+					}
+				}
+				catch (...) {
+					std::cout << "Error occured. Try again" << std::endl;
+				}
+
+				continue;
+			}
+
+			case '5':
+			case '6': {
+				double sum = 0.0, sum_no_mk = 0.0;
+				for (size_t i = 0; i < invoice.getSize(); i++) {
+					Product* product = invoice.find(i);
+					double price = product->getPrice(),
+						percentage = product->getPercentage(),
+						quantity = (double) product->getQuantity();
+
+					sum += quantity * price * (percentage + 100.0) / 100.0;
+					sum_no_mk += quantity * price;
+				}
+				std::cout << "\nCurrent invoice:\n";
+				invoice.output();
+
+				if (sum_no_mk == 0.0) std::cout << "\nTotal sum: 0.0" << std::endl;
+				else {
+					std::cout <<
+						"\nTotal sum: " << sum <<
+						"\nSum without markup: " << sum_no_mk <<
+						"\nTotal markup percentage: " << sum / sum_no_mk * 100.0
+					<< std::endl;
+				}
+
+				if (input_line[0] == '6') { return; }
 			}
 		}
 	}

@@ -12,6 +12,7 @@ private:
 	void actionSearch();
 	void actionSave();
 	void actionLoad();
+	void actionInvoice();
 
 	Product inputProduct();
 
