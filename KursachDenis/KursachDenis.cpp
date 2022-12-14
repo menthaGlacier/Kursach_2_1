@@ -2,6 +2,6 @@
 
 int main() {
 	Menu menu;
-	menu.launch();
+	menu.launch();	//запускаем меню
 	return 0;
 }

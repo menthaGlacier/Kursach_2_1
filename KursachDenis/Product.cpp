@@ -91,37 +91,38 @@ void Product::setPercentage(double _percentage) {
 }
 
 void Product::setDate(size_t _day, size_t _month, size_t _year) {
-	if (_year < 1970) {
+	if (_year < 1970) {	//год находится в пределах 1970-2038
 		_year = 1970;
 	} else if (_year > 2038) {
 		_year = 2038;
 	}
 
-	if (_month == 0) {
+	if (_month == 0) {//месяц находится в промежутке 1-12
 		_month = 1;
 	} else if (_month > 12) {
 		_month = 12;
 	}
 
-	size_t day_limit = 31;
+	size_t day_limit = 31;	//вычисляем максимальный день в месяце
 	if (_month == 2) {
-		if (_year % 4 == 0) {
+		if (_year % 4 == 0) {	//в феврале в високосный год 29 дней
 			day_limit = 29;
 		} else {
-			day_limit = 28;
+			day_limit = 28;//в обычный год 28 дней
 		}
 	} else 
-		if ((_month < 8 && _month % 2 == 0)
-			|| (_month > 7 && _month % 2 == 1)) {
+		if ((_month < 8 && _month % 2 == 0)	//в чётные дни до августа 30 дней
+			|| (_month > 7 && _month % 2 == 1)) {//в нечётные дни после июля 30 дней
 			day_limit = 30;
 	}
 
-	if (_day == 0) {
+	if (_day == 0) {//день находится в промежутке от 1 до максимального
 		_day = 0;
 	} else if (_day > day_limit) {
 		_day = day_limit;
 	}
 
+	//устанавливаем значения
 	day = _day;
 	month = _month;
 	year = _year;
@@ -179,58 +180,4 @@ std::ostream& operator<<(std::ostream& _output, const Product& _product) {
 		"\nMarkup percentage: " << _product.percentage <<
 		"\nReceipt date: " << _product.day << "." << _product.month << "." << _product.year;
 	return _output;
-}
-
-// Оператор присваивания
-Product& Product::operator=(const Product& _product) {
-	// Если объекты совпадают, копирование не требуется
-	if (this == &_product) {
-		return *this;
-	}
-
-	// Иначе копируем содержимое _product в объект
-	this->setName(_product.name);
-	this->setCategory(_product.category);
-	this->setQuantity(_product.quantity);
-	this->setPrice(_product.price);
-	this->setPercentage(_product.percentage);
-	this->setDate(_product.day, _product.month, _product.year);
-	return *this;
-}
-
-// Оператор сравнения "равно"
-bool Product::operator==(const Product& _product) const {
-	// Если какое-либо поле не совпадает с сравниваемым - объекты не равны
-	if (this->name != _product.name
-	|| this->category != _product.category
-	|| this->quantity != _product.quantity
-	|| this->percentage != _product.percentage
-	|| this->price != _product.price
-	|| this->day != _product.day
-	|| this->month != _product.month
-	|| this->year != _product.year) {
-		return false;
-	}
-
-	return true;
-}
-
-// Оператор сравнения "больше"
-bool Product::operator>(const Product& _product) const {
-	// Сравнение идёт по полю "Наименование товара"
-	if (this->name > _product.name) {
-		return true;
-	}
-
-	return false;
-}
-
-// Оператор сравнения "меньше"
-bool Product::operator<(const Product& _product) const {
-	// Сравнение идёт по полю "Наименование товара"
-	if (this->name < _product.name) {
-		return true;
-	}
-
-	return false;
 }
