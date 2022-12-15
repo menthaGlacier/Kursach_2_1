@@ -13,10 +13,10 @@ enum class ProductFieldName {
 class Product {
 public:
 	//  онструкторы
-	Product();
+	Product();	//конструктор по умолчанию
 	Product(const std::string& _name, const std::string& _category, size_t _quantity, double _price,
-		double _percentage, size_t _day, size_t _month, size_t _year);
-	Product(const Product& copy);
+		double _percentage, size_t _day, size_t _month, size_t _year); //конструктор по параметрам
+	Product(const Product& copy);//копирующий конструктор
 
 	// ѕолучение значаений
 	std::string getName() const;
@@ -43,15 +43,9 @@ public:
 	void output() const;
 	friend std::ostream& operator<<(std::ostream& _output, const Product& _product);
 
-	// ќператоры
-	Product& operator=(const Product& _product);
-	bool operator==(const Product& _product) const;
-	bool operator>(const Product& _product) const;
-	bool operator<(const Product& _product) const;
-
 private:
-	std::string name, category;
-	size_t quantity;
-	double price, percentage;
-	size_t day, month, year;
+	std::string name, category;	//наименование товара и категори€
+	size_t quantity;	//количество товара
+	double price, percentage;	//цена и процент торговой надбавки
+	size_t day, month, year;//день, мес€ц, год поступлени€
 };
