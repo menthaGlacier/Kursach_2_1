@@ -12,7 +12,7 @@ private:
 	int year, month, day; /* Дата подачи */
 	long long int number; /* Контактный телефон */
 
-	friend class Array; // Дружественный класс массива */
+	friend class AdvertBoard; /* Дружественный класс доски объявлений */
 public:
 	/* Конструкторы */
 	Advert();
@@ -36,10 +36,10 @@ public:
 	int getDay() const;
 	long long int getNumber() const;
 
+	/* Оператор меньше и больше */
+	bool operator<(const Advert& advert) const;
+	bool operator>(const Advert& advert) const;
+
 	/* Вывод */
 	void output() const;
-
-	/* Оператор меньше и больше */
-	bool operator<(const Advert& right) const;
-	bool operator>(const Advert& right) const;
 };
