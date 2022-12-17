@@ -31,16 +31,16 @@ public:
 	void remove(int pos);
 
 	/* Получение элемента */
-	Advert& operator[](int pos) const;
+	Advert* operator[](int pos) const;
 
-	/* Сортировка и поиск */
-	void sort();
+	/* Поиск и сортировка */
 	void find() const;
+	void sort();
 
 	/* Сохранение и загрузка из файла */
 	void save(std::string file) const;
-	void load(std::string load);
+	void load(std::string file);
 
-	/* Вывод массива */
+	/* Вывод */
 	void output() const;
 };

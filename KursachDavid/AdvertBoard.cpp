@@ -71,6 +71,18 @@ void AdvertBoard::insert(const Advert& advert)
 	arr[size++] = Advert(advert);
 }
 
+/* Вставка элемента в нужную позицию */
+void AdvertBoard::insert(const Advert& advert, int pos)
+{
+	// TODO
+}
+
+/* Вставка элемента с сохранением порядка */
+void AdvertBoard::insort(const Advert& advert)
+{
+	// TODO
+}
+
 /* Удаление последнего элемента массива */
 void AdvertBoard::remove()
 {
@@ -91,10 +103,51 @@ void AdvertBoard::remove()
 	}
 }
 
-/*  */
+/* Удаление элемента в нужной позиции */
 void AdvertBoard::remove(int pos)
 {
 	// TODO
 }
 
-//TODO EVERTHING ELSE
+/* Получение элемента через указатель */
+Advert* AdvertBoard::operator[](int pos) const
+{
+	/* Нельзя обратиться к отрицательным или выходящим за размер элементам */
+	if (pos < 0 || pos + 1 > size)
+	{
+		return nullptr;
+	}
+
+	/* Возвращаем элемент */
+	return &(arr[pos]);
+}
+
+/* Поиск по заданной рубрике и по шаблону искомого слова в тексте объявления */
+void AdvertBoard::find() const
+{
+	// TODO
+}
+
+/* Сортировка по дате подачи */
+void AdvertBoard::sort()
+{
+	// TODO
+}
+
+/* Сохранение доски объявлений в файле */
+void AdvertBoard::save(std::string file) const
+{
+	// TODO
+}
+
+/* Загрузка доски объявлений из файла */
+void AdvertBoard::load(std::string file)
+{
+	// TODO
+}
+
+/* Вывод доски объявлений */
+void AdvertBoard::output() const
+{
+	// TODO
+}
