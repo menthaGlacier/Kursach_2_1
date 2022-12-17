@@ -122,10 +122,38 @@ Advert* AdvertBoard::operator[](int pos) const
 	return &(arr[pos]);
 }
 
-/* Поиск по заданной рубрике и по шаблону искомого слова в тексте объявления */
-void AdvertBoard::find() const
+/* Поиск по заданной рубрике */
+void AdvertBoard::findCategory(const std::string cat) const
 {
-	// TODO
+	std::cout << "Search results:" << std::endl;
+
+	/* Проходимся по всей доске объявлений */
+	for (int i = 0; i < size; i++)
+	{
+		/* Если найдено совпадение, выводим позицию объявления и его само */
+		if (arr[i].category.find(cat) != std::string::npos)
+		{
+			std::cout << "At #" << i << "pos" << std::endl;
+			arr[i].output();
+		}
+	}
+}
+
+/* Поиск по шаблону искомого слова в тексте объявления */
+void AdvertBoard::findAdText(const std::string ad) const
+{
+	std::cout << "Search results:" << std::endl;
+	
+	/* Проходимся по всей доске объявлений */
+	for (int i = 0; i < size; i++)
+	{
+		/* Если найдено совпадение, выводим позицию объявления и его само */
+		if (arr[i].adText.find(ad) != std::string::npos)
+		{
+			std::cout << "At #" << i << "pos" << std::endl;
+			arr[i].output();
+		}
+	}
 }
 
 /* Сортировка по дате подачи */
@@ -135,19 +163,141 @@ void AdvertBoard::sort()
 }
 
 /* Сохранение доски объявлений в файле */
-void AdvertBoard::save(std::string file) const
+bool AdvertBoard::save(std::string file) const
 {
-	// TODO
+	/* Открываем файл в режими записи в бинарный файл */
+	/* Также проверяем, был ли открыт файл */
+	std::fstream fl(file, std::ios::out | std::ios::binary);
+	if (fl.is_open() == false)
+		return false;
+
+	/* Записываем размер массива, если он не пуст */
+	if (size > 0)
+		fl.write((const char*)(&size), sizeof(size));
+
+	/* Проходим по всему массиву, либо до получения ошибки */
+	for (int i = 0; i < size && fl.fail() == false; i++)
+	{
+		/* Сначала записываем данные фиксированного размера */
+		fl.write((const char*)(&arr[i].buySell), sizeof(arr[i].buySell));
+		fl.write((const char*)(&arr[i].year), sizeof(arr[i].year));
+		fl.write((const char*)(&arr[i].month), sizeof(arr[i].month));
+		fl.write((const char*)(&arr[i].day), sizeof(arr[i].day));
+		fl.write((const char*)(&arr[i].number), sizeof(arr[i].number));
+
+		/* Далее записываем строки */
+		/* Записываем размер строк, затем текст строки */
+		/* Если строка пуста, запись текста не производится */
+		int strSize = arr[i].category.size();
+		fl.write((const char*)(&strSize), sizeof(strSize));
+		if (strSize > 0)
+			fl.write(arr[i].category.c_str(), strSize);
+
+		strSize = arr[i].adText.size();
+		fl.write((const char*)(&strSize), sizeof(strSize));
+		if (strSize > 0)
+			fl.write(arr[i].adText.c_str(), strSize);
+	}
+
+	/* Закрываем файл и возвращаем false, если была обнаружена ошибка */
+	fl.close();
+	if (fl.fail())
+		return false;
+	else
+		return true;
 }
 
 /* Загрузка доски объявлений из файла */
-void AdvertBoard::load(std::string file)
+bool AdvertBoard::load(std::string file)
 {
-	// TODO
+	/* Открываем файл в режими чтения в бинарный файл */
+	/* Также проверяем, был ли открыт файл */
+	std::fstream fl(file, std::ios::in | std::ios::binary);
+	if (fl.is_open() == false)
+		return false;
+
+	/* Читаем записанную вместимость и создаем массив для чтения */
+	int arrCapacity = 0, arrSize = 0;
+	fl.read((char*)(&arrCapacity), sizeof(arrCapacity));
+	Advert* tempArr = new Advert[arrCapacity];
+
+	/* Читаем по размеру записанного массива, либо до конца файла */
+	for (int i = 0; i < arrCapacity && fl.peek() != EOF; i++)
+	{
+		/* Временный объект для чтения */
+		Advert temp;
+
+		/* Сначала считываем данные фиксированного размера */
+		fl.read((char*)(&temp.buySell), sizeof(temp.buySell));
+		fl.read((char*)(&temp.year), sizeof(temp.year));
+		fl.read((char*)(&temp.month), sizeof(temp.month));
+		fl.read((char*)(&temp.day), sizeof(temp.day));
+		fl.read((char*)(&temp.number), sizeof(temp.number));
+
+		/* Далее читаем строки */
+		/* Читаем размер строк, затем текст строки */
+		/* Для чтения будет использовать временный буфер */
+		/* Если строка пуста, чтение текста не производится */
+		int strSize = 0;
+		fl.read((char*)(&strSize), sizeof(strSize));
+		if (strSize > 0)
+		{
+			/* Читаем, записываем в строку, очищаем память буфера */
+			char* strBuffer = new char[strSize];
+			fl.read(strBuffer, strSize);
+			temp.category.assign(strBuffer, strSize);
+			delete[] strBuffer;
+		}
+
+		strSize = 0;
+		fl.read((char*)(&strSize), sizeof(strSize));
+		if (strSize > 0)
+		{
+			/* Читаем, записываем в строку, очищаем память буфера */
+			char* strBuffer = new char[strSize];
+			fl.read(strBuffer, strSize);
+			temp.adText.assign(strBuffer, strSize);
+			delete[] strBuffer;
+		}
+
+		/* Записываем в массив прочтенное объявление */
+		tempArr[i] = temp;
+		arrSize++;
+	}
+
+	/* Закрываем файл */
+	fl.close();
+	
+	/* Возвращаем false и очищаем память, если была обнаружена ошибка */
+	/* Иначе заменяем существующий массив доски объявления новым */
+	if (fl.fail())
+	{
+		delete[] tempArr;
+		return false;
+	}
+
+	else
+	{
+		/* Очищаем существующий массив, если он не пуст */
+		if (arr)
+			delete arr;
+
+		capacity = arrCapacity;
+		size = arrSize;
+		arr = tempArr;
+		return true;
+	}
 }
 
 /* Вывод доски объявлений */
 void AdvertBoard::output() const
 {
-	// TODO
+	std::cout << "Advert board:" << std::endl;
+
+	/* Последовательно выводим все элементы массива */
+	for (int i = 0; i < size; i++)
+	{
+		std::cout << "Advert #" << i << std::endl;
+		arr[i].output();
+	}
 }

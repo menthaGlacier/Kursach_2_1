@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include "Advert.h"
 
 /* Доска объявлений, реализованная через массив */
@@ -33,13 +34,14 @@ public:
 	/* Получение элемента */
 	Advert* operator[](int pos) const;
 
-	/* Поиск и сортировка */
-	void find() const;
+	/* Поиски и сортировка */
+	void findCategory(const std::string cat) const;
+	void findAdText(const std::string ad) const;
 	void sort();
 
 	/* Сохранение и загрузка из файла */
-	void save(std::string file) const;
-	void load(std::string file);
+	bool save(std::string file) const;
+	bool load(std::string file);
 
 	/* Вывод */
 	void output() const;
