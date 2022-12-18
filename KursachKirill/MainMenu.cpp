@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 
-//
+// Запуск меню
 void MainMenu::start() {
 	while (true) {
 		// Выводим список достпуных действий
@@ -53,7 +53,7 @@ void MainMenu::start() {
 	}
 }
 
-//
+// Операция вставки элемента в расписание
 void MainMenu::scheduleInsert() {
 	// Выводим список достпуных действий
 	cout << "1 - Add at the end" << endl
@@ -101,7 +101,7 @@ void MainMenu::scheduleInsert() {
 	}
 }
 
-//
+// Операция удаления элемента из расписания
 void MainMenu::scheduleRemove() {
 	// Выводим список достпуных действий
 	cout << "1 - Remove from the end" << endl
@@ -140,22 +140,22 @@ void MainMenu::scheduleRemove() {
 	}
 }
 
-//
+// Операция вывода расписания
 void MainMenu::schedulePrint() {
 	schedule.print();
 }
 
-//
+// Операция поиска
 void MainMenu::scheduleSearch() {
 	schedule.search();
 }
 
-//
+// Операция упорядочивания расписания
 void MainMenu::scheduleOrder() {
 	schedule.order();
 }
 
-//
+// Операция сохранения расписания в бинарный файл
 void MainMenu::scheduleSave() {
 	cout << "Your file name: ";
 	getline(cin, input);
@@ -166,7 +166,7 @@ void MainMenu::scheduleSave() {
 	}
 }
 
-//
+// Операция загрузки расписания из двоичного файла
 void MainMenu::scheduleLoad() {
 	cout << "Your file name: ";
 	getline(cin, input);
@@ -177,6 +177,7 @@ void MainMenu::scheduleLoad() {
 	}
 }
 
+// Операция ввода расписания
 Train MainMenu::enterTrain() {
 	uint trainNum;
 	string dayOfWeeks;
