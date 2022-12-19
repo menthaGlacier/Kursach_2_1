@@ -13,9 +13,14 @@ List::~List() {
 	}
 
 	// Очищаем список
-	for (uint i = 0; i < size; i++) {
-		Node* temp = head;
-		head = head->next;
+	//for (uint i = 0; i < size; i++) {
+	//	Node* temp = head;
+	//	head = head->next;
+	//	delete temp;
+	//}
+
+	for (List::Iterator it = begin(); it != end(); it++) {
+		Node* temp = *it;
 		delete temp;
 	}
 }
@@ -136,16 +141,26 @@ void List::remove(uint index) {
 	size--;
 }
 
-// Поиск элемента по разным полям через меню
-Train* search() {
-	cout << "Select the field you want to search element by:" << endl;
-	cout << "1 - Train number" << endl << "2 - Working day of weeks" << endl
-		<< "3 - Departure time" << endl << "4 - Travel time" << endl
-		<< "5 - Departure station" << endl << "6 - Destination station" << endl
-		<< "7 - Transit stations" << endl;
-	// TODO
-	return nullptr; // DEBUG!!!
+// Поиск элементов по станции назначения
+void List::search(uint station) {
+	cout << "Search:" << endl;
+	//Node* tail = head;
+	//for (uint i = 0; i < size; i++) {
+	//	if (tail->train->getStop() == station) {
+	//		cout << "Found at position " << i << endl;
+	//		tail->train->print();
+	//	}
+	//	
+	//	tail = tail->next;
+	//}
 
+	for (List::Iterator it = begin(); it != end(); it++) {
+		if ((*it)->train->getStop() == station) {
+			cout << "Found at position " << it.getPos() << endl;
+			(*it)->train->print();
+			cout << endl;
+		}
+	}
 }
 
 // Упорядочивание списка
@@ -179,13 +194,19 @@ void List::print() {
 	}
 
 	// Выводим все элементы списка
-	Node* tail = head;
-	cout << "List:" << endl;
-	for (uint i = 0; i < size; i++) {
-		cout << "Element - " << i << "." << endl;
-		tail->train->print();
+	//Node* tail = head;
+	//cout << "List:" << endl;
+	//for (uint i = 0; i < size; i++) {
+	//	cout << "Element - " << i << "." << endl;
+	//	tail->train->print();
+	//	cout << endl;
+	//	tail = tail->next;
+	//}
+
+	for (List::Iterator it = begin(); it != end(); it++) {
+		cout << "Element " << it.getPos() << "." << endl;
+		(*it)->train->print();
 		cout << endl;
-		tail = tail->next;
 	}
 }
 
@@ -243,9 +264,94 @@ bool List::load(const char* fileName) {
 			insert(readTrain);
 		}
 	}
+
+	return true;
 }
 
 // Получение размера списка
 uint List::getSize() {
 	return size;
+}
+
+// Конструктор по параметрам
+List::Iterator::Iterator(List& _list, uint _pos)
+	: itrList(_list), curNode(nullptr), pos(_pos) {
+	// Если позиция больше или равна размеру, назначим итератор на последний элемент списка
+	if (pos + 1 >= itrList.size) {
+		pos = itrList.size - 1;
+		curNode = itrList.last;
+	} else if (pos != 0) { // Иначе дойдем до данного элемента
+		curNode = itrList.head;
+		for (uint i = 0; i < pos; i++) {
+			curNode = curNode->next;
+		}
+	} else { // Иначе итератор будет на первом элементе списка
+		curNode = itrList.head;
+	}
+}
+
+// Конструктор копирования
+List::Iterator::Iterator(const List::Iterator& other)
+	: itrList(other.itrList), pos(other.pos) {
+}
+
+// Оператор присваивания
+List::Iterator& List::Iterator::operator=(List::Iterator& other) {
+	itrList = other.itrList;
+	curNode = other.curNode;
+	pos = other.pos;
+	return *this;
+}
+
+// Оператор разыменования
+Node* List::Iterator::operator*() {
+	return curNode;
+}
+
+// Преинкремент итератора
+List::Iterator& List::Iterator::operator++() {
+	if (pos + 1 != itrList.size) {
+		curNode = curNode->next;
+		pos++;
+	}
+
+	return *this;
+}
+
+// Постинкремент итератора
+List::Iterator List::Iterator::operator++(int) {
+	Iterator temp(*this);
+	++(*this);
+	return temp;
+}
+
+// Сравнение равности
+bool List::Iterator::operator==(const List::Iterator& other) {
+	if ((&itrList == &(other.itrList))
+		&& (curNode == other.curNode)
+		&& (pos == other.pos)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// Сравнение неравности
+bool List::Iterator::operator!=(const List::Iterator& other) {
+	return !(*this == other); // Неравенство противоположно равности
+}
+
+// Получени позиции итератора
+uint List::Iterator::getPos() {
+	return pos;
+}
+
+// Получение начала списка для итератора
+List::Iterator List::begin() {
+	return List::Iterator(*this, 0);
+}
+
+// Получение конца списка для итератора
+List::Iterator List::end() {
+	return List::Iterator(*this, this->size);
 }

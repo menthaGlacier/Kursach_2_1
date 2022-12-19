@@ -147,7 +147,10 @@ void MainMenu::schedulePrint() {
 
 // Операция поиска
 void MainMenu::scheduleSearch() {
-	schedule.search();
+	cout << "Enter destination station to perform search: " << endl;
+	getline(cin, input);
+	uint searchStation = stoul(input);
+	schedule.search(searchStation);
 }
 
 // Операция упорядочивания расписания
@@ -203,7 +206,7 @@ Train MainMenu::enterTrain() {
 
 		cout << "Enter departure minute" << endl;
 		getline(cin, input);
-		startMinute = stod(input);
+		startMinute = stoul(input);
 
 		cout << "Enter travel hours" << endl;
 		getline(cin, input);
@@ -211,7 +214,7 @@ Train MainMenu::enterTrain() {
 
 		cout << "Enter travel minutes" << endl;
 		getline(cin, input);
-		travelMinutes = stod(input);
+		travelMinutes = stoul(input);
 
 		cout << "Enter departure station" << endl;
 		getline(cin, input);
