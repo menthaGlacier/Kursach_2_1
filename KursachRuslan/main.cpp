@@ -146,7 +146,8 @@ void menu(List& list)
 		{
 			size_t index = 0;
 			Node product;
-			for (;;)
+			bool go_back = false;
+			while (!go_back)
 			{
 				if (list.getSize() == 0)
 				{
@@ -163,6 +164,8 @@ void menu(List& list)
 				cout << "[2] - Предыдущий товар" << endl;
 				cout << "[3] - Редактирование" << endl;
 				cout << "[4] - Удаление" << endl;
+				cout << "[ ] - Возвращение в меню" << endl;
+
 				key = _getch();	//получаем выбор действия
 				switch (key)
 				{
@@ -208,6 +211,14 @@ void menu(List& list)
 					else cout << "Удалено" << endl;
 					break;
 				}
+				case ' '://возвращение назад
+				{
+					go_back = true;
+					break;
+				}
+				default: //на случай, если пытаются выбрать действие, отсутсвующее в перечне
+					cout << "Error: действие отсутствует в перечне!" << endl;
+					break;
 				}
 			}
 			break;

@@ -330,6 +330,7 @@ bool List::removeAt(size_t index)	//удаление в заданной позиции
 			continue;
 		}
 		//иначе добавляем элемент в новый файл
+		temp_file.seekg(0, ios::end);
 		last = temp_file.tellg();
 		temp.prev = prev;
 		temp.next = -1;
