@@ -7,7 +7,7 @@ void Node::inputProduct()//ввод данных о товаре
 		cout << "¬ведите категорию" << endl;
 		cin >> category;
 
-		cout << "¬ведите название товра" << endl;
+		cout << "¬ведите название товара" << endl;
 		cin >> name;
 
 		cout << "¬ведите количество" << endl;

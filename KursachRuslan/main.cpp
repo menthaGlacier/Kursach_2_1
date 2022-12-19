@@ -208,7 +208,12 @@ void menu(List& list)
 				case '4': //удаление
 				{
 					if (list.removeAt(index) == false) cout << "Не удалось удалить" << endl;
-					else cout << "Удалено" << endl;
+					else
+					{
+						cout << "Удалено" << endl;
+						if (index == list.getSize() && index > 0) index--;
+					}
+		
 					break;
 				}
 				case ' '://возвращение назад
