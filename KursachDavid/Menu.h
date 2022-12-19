@@ -11,9 +11,9 @@ private:
 	std::string inputLine;
 
 	/* Метод ввода нового элемента для вставок */
-	Advert& newAdvert();
+	Advert newAdvert();
 	
-	/* Пункты меню*/
+	/* Пункты меню */
 	void insertAct();
 	void removeAct();
 	void saveAct();

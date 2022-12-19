@@ -165,9 +165,9 @@ bool Advert::operator>(const Advert& advert) const
 /* Вывод объявления */
 void Advert::output() const
 {
-	std::cout << "AD from " << year << "." << month << "." << day << std::endl
+	std::cout << "AD from: " << year << "." << month << "." << day << std::endl
 		<< "In category: " << category << std::endl
-		<< "to " << (buySell ? "sell " : "buy ") << std::endl
+		<< "To " << (buySell ? "sell" : "buy") << std::endl
 		<< "Ad text: " << adText << std::endl
 		<< "Contact: " << number << std::endl;
 }

@@ -10,6 +10,7 @@ class AdvertBoard
 private:
 	Advert* arr; /* Массив элементов */
 	int size, capacity; /* Размер и вместимость массива */
+	friend class Menu; /* Меню - дружественный класс доске объявлений */
 
 	/* Переводим старый массив в новый с новым размером */
 	void updateArray();

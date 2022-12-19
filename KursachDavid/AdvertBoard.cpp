@@ -347,7 +347,7 @@ bool AdvertBoard::load(std::string file)
 	{
 		/* Очищаем существующий массив, если он не пуст */
 		if (arr)
-			delete arr;
+			delete[] arr;
 
 		capacity = arrCapacity;
 		size = arrSize;
