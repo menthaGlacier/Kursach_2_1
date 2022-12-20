@@ -259,11 +259,11 @@ void Announcement::inputAnnouncement(Announcement& elem)
 			break;
 		}
 		else { cout << "Неверный тип" << endl; }
-		cin.ignore(1000, '\n');	//игнорируем лишние символы, оставшиеся в потоке
+		cin.ignore(256, '\n');	//игнорируем лишние символы, оставшиеся в потоке
 	}
 
 	cout << "Введите рубрику объявления" << endl;
-	cin.ignore(1000, '\n');
+	cin.ignore(256, '\n');
 	getline(cin, buffer);
 
 	elem.setCategory(buffer);
@@ -272,7 +272,7 @@ void Announcement::inputAnnouncement(Announcement& elem)
 	{
 		cout << "Введите контактный номер (без 8)" << endl;
 		unsigned long long number = 0;
-		bool failed = false;
+		bool badInput = false;
 		cin >> buffer;
 		for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем полученные символы в числа
 		{
@@ -283,11 +283,11 @@ void Announcement::inputAnnouncement(Announcement& elem)
 			else		//если символ не число
 			{
 				cout << "Неверный номер" << endl;
-				failed = true;	//устанавливаем флаг ошибки
+				badInput = true;	//устанавливаем флаг ошибки
 				break;	//прекращаем преобразование
 			}
 		}
-		if (failed == false)	//если не была получена ошибка при преобразовании
+		if (badInput == false)	//если не была получена ошибка при преобразовании
 		{
 			elem.setNumber(number);	//устанавливаем номер
 			break;
@@ -295,7 +295,7 @@ void Announcement::inputAnnouncement(Announcement& elem)
 	}
 
 	cout << "Введите текст объявления" << endl;
-	cin.ignore(1000, '\n');
+	cin.ignore(256, '\n');
 	getline(cin, buffer);
 
 	elem.setAdText(buffer);

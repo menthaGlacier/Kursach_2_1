@@ -17,18 +17,17 @@ int main()
 	{
 		system("cls");	//очищаем экран
 
-		cout
-			<< "<<<Список доступных действий>>>\n"
-			<< "1. Добавить объявление в список\n"
-			<< "2. Отсортировать объявления по дате\n"
-			<< "3. Удалить объявление из списка\n"
-			<< "4. Редактировать объявление в списке\n"
-			<< "5. Поиск объявления по рубрике\n"
-			<< "6. Поиск объявления по тексту\n"
-			<< "7. Показать список объявлений\n"
-			<< "8. Постраничный просмотр объявлений\n"
-			<< "q. Выход\n"
-			<< "Выберите действие: " << flush;
+		cout << "<============Меню============>" << endl;
+		cout << "\t1. Добавить объявление в список" << endl;
+		cout << "\t2. Отсортировать объявления по дате" << endl;
+		cout << "\t3. Удалить объявление из списка" << endl;
+		cout << "\t4. Редактировать объявление в списке" << endl;
+		cout << "\t5. Поиск объявления по рубрике" << endl;
+		cout << "\t6. Поиск объявления по тексту" << endl;
+		cout << "\t7. Показать список объявлений" << endl;
+		cout << "\t8. Постраничный просмотр объявлений" << endl;
+		cout << "\t9. Выход" << endl;
+		cout << "Выберите действие: " << flush;
 		char choise;
 
 		cin >> choise;	//получаем выбор от пользователя
@@ -66,7 +65,7 @@ int main()
 						{
 							cout << "Введите номер" << endl;
 							unsigned long long number = 0;
-							bool failed = false;
+							bool badInput = false;
 							cin >> buffer;
 							for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем полученные символы в числа
 							{
@@ -77,11 +76,11 @@ int main()
 								else		//если символ не число
 								{
 									cout << "Неверный номер" << endl;
-									failed = true;	//устанавливаем флаг ошибки
+									badInput = true;	//устанавливаем флаг ошибки
 									break;	//прекращаем преобразование
 								}
 							}
-							if (failed == false)	//если не была получена ошибка при преобразовании
+							if (badInput == false)	//если не была получена ошибка при преобразовании
 							{
 								list.insert(new_element, number - 1);	//вставляем в заданную позицию
 								break;
@@ -115,7 +114,7 @@ int main()
 			{
 				cout << "Введите номер объявления: ";
 				unsigned int pos = 0;
-				bool failed = false;
+				bool badInput = false;
 				cin >> buffer;	//получаем строку от пользователя
 				for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
 				{
@@ -126,12 +125,12 @@ int main()
 					else		//если символ не число
 					{
 						cout << "Неверный номер" << endl;
-						failed = true;	//устанавливаем флаг ошибки
+						badInput = true;	//устанавливаем флаг ошибки
 						break;	//завершаем преобразование
 					}
 				}
 				//если успешно получено число и существует элемент с таким индексом, то удаляем его
-				if (failed == false && list.removeAt(pos - 1) == true) { cout << "Объявление успешно удалено"; }
+				if (badInput == false && list.removeByIndex(pos - 1) == true) { cout << "Объявление успешно удалено"; }
 				else { cout << "Нет такого объявления"; }
 				break;
 			}
@@ -140,7 +139,7 @@ int main()
 			{
 				cout << "Введите номер объявления" << endl;
 				unsigned int pos = 0;
-				bool failed = false;
+				bool badInput = false;
 				cin >> buffer;	//получаем строку от пользователя
 				for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
 				{
@@ -151,13 +150,13 @@ int main()
 					else		//если символ не число
 					{
 						cout << "Неверный номер" << endl;
-						failed = true;	//устанавливаем флаг ошибки
+						badInput = true;	//устанавливаем флаг ошибки
 						break;	//завершаем преобразование
 					}
 				}
 
 				Announcement tmp;
-				if (failed == true || list.getNode(pos-1, tmp) == -1)
+				if (badInput == true || list.getNode(pos-1, tmp) == -1)
 				{
 					cout << "Нет такого объявления"; 
 					break;
@@ -172,7 +171,7 @@ int main()
 			case '5':	//Поиск по рубрике
 			{
 				cout << "Введите рубрику для поиска: ";
-				cin.ignore(1000, '\n');
+				cin.ignore(256, '\n');
 				getline(cin, buffer);
 
 				list.findCategory(buffer);
@@ -182,7 +181,7 @@ int main()
 			case '6':	//Поиск по тексту объявления
 			{
 				cout << "Введите текст для поиска: ";
-				cin.ignore(1000, '\n');
+				cin.ignore(256, '\n');
 				getline(cin, buffer);
 
 				list.findText(buffer);
@@ -225,25 +224,17 @@ int main()
 						case '1'://следующий
 						{
 							if (pos < list.getSize())
-							{
 								pos++;
-							}
 							else
-							{
 								cout << "Последний элемент" << endl;
-							}
 							continue;
 						}
 						case '2'://предыдущий
 						{
 							if (pos > 1)
-							{
 								pos--;
-							}
 							else
-							{
 								cout << "Первый элемент" << endl;
-							}
 							continue;
 						}
 						case 'b'://возвращение назад
@@ -261,22 +252,20 @@ int main()
 				}
 				break;
 			}
-			case 'q':	//Выход
+			case '9':	//Выход
 			{
 				should_close = true;
 				break;
 			}
 
 			default:	//Остальные символы не обрабатываются
-			{
 				cout << "Неизвестное действие" << endl;
-			}
 		}
 
 		if (!should_close)
 		{
 			cin.unget();
-			cin.ignore(1000, '\n');
+			cin.ignore(256, '\n');
 			cout << "\n\n\n";
 			system("pause");
 		}

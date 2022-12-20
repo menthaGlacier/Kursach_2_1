@@ -1,19 +1,19 @@
 #include "List.h"
 
 List::List()	//конструктор списка
-	: size(0)
 {
-	file.open("board.bin", ios::in | ios::out | ios::binary);	//пытаемся открыть существующий файл 
+	size = 0;
+	file.open("FILE.bin", ios::in | ios::out | ios::binary);	//пытаемся открыть существующий файл 
 	if (!file.is_open())	//если файл не открылся
 	{
-		file.open("board.bin", ios::out);	//создаём файл
+		file.open("FILE.bin", ios::out);	//создаём файл
 		if (!file.is_open())	//если создать файл не удалось аварийно выходим из программы
 		{
-			cout << "Не удалось открыть файл board.bin" << endl;
+			cout << "Не удалось открыть файл FILE.bin" << endl;
 			exit(-1);
 		}
 		file.close();	//закрываем файл
-		file.open("board.bin", ios::in | ios::out | ios::binary);	//открываем на двоичные чтение и запись
+		file.open("FILE.bin", ios::in | ios::out | ios::binary);	//открываем на двоичные чтение и запись
 	}
 	else
 	{
@@ -21,46 +21,50 @@ List::List()	//конструктор списка
 		while (tmp.fileLoad(file))	//проходим по списку в файле
 		{
 			size++;	//подсчитываем размер
-			if (tmp.next != -1) file.seekg(tmp.next);
-			else break;
+			if (tmp.next != -1)
+				file.seekg(tmp.next);
+			else
+				break;
 		}
 	}
 }
 
 List::~List()	//деструктор списка
 {
-	if (file.is_open()) file.close();	//если файл открыт, закрываем
+	if (file.is_open())
+		file.close();	//если файл открыт, закрываем
 }
 
 //добавление товара в конец списка
 void List::add(Announcement& elem)
 {
 	Announcement tmp;
-	long long int prev_pos = -1, cur_pos = 0;//файловый указатель на элемент перед новым и на новый
-	file.seekg(cur_pos);	//переходим в начало файла
+	long long int old_pos = -1, this_pos = 0;//файловый указатель на элемент перед новым и на новый
+	file.seekg(this_pos);	//переходим в начало файла
 
 	while (tmp.fileLoad(file))	//проходим до последнего элемента, считывая его
 	{
-		prev_pos = cur_pos;
-		cur_pos = tmp.next;
-		if (cur_pos == -1)
+		old_pos = this_pos;
+		this_pos = tmp.next;
+		if (this_pos == -1)
 			break;
-		file.seekg(cur_pos);
+		file.seekg(this_pos);
 	}
 
 	file.clear();
 	file.seekg(0, ios::end);	//переходим в конец файла
-	cur_pos = file.tellg();	//запоминаем текущую позицию в файле
+	this_pos = file.tellg();	//запоминаем текущую позицию в файле
 	elem.next = -1;
 
-	if (prev_pos != -1)	//если перед новой вершиной есть элементы
+	if (old_pos != -1)	//если перед новой вершиной есть элементы
 	{
 		//переходим к месту в файле, где хранится файловый указатель 
 		//на следующий элемент у элемента перед новым
-		file.seekg(prev_pos);
-		file.write(reinterpret_cast<char*>(&cur_pos), sizeof(cur_pos));//записываем файловый указатель на новую вершину
-		file.seekg(cur_pos);//переходим в позицию новой вершины
+		file.seekg(old_pos);
+		file.write(reinterpret_cast<char*>(&this_pos), sizeof(this_pos));//записываем файловый указатель на новую вершину
+		file.seekg(this_pos);//переходим в позицию новой вершины
 	}
+
 	elem.fileSave(file);//записываем вершину
 	size++;//увеличиваем размер списка
 	file.flush();//сохраняем изменения в файле на диск
@@ -77,68 +81,69 @@ void List::insert(Announcement& elem, unsigned int pos)
 	
 	if (pos == 0)	//вставка в начало
 	{
-		long long int prev_pos = 0, next_pos = -1;
-		fstream temp_file("tmp.bin", ios::out | ios::binary);//создаём временный файл
+		long long int old_pos = 0, next_pos = -1;
+		fstream tmpf("TMP.bin", ios::out | ios::binary);//создаём временный файл
 		//инициализируем новую вершину
 		elem.next = -1;
-		elem.fileSave(temp_file);//записываем во временный файл
+		elem.fileSave(tmpf);//записываем во временный файл
 
-		next_pos = temp_file.tellg();//записываем в файловый указатель позицию для следующего элемента
+		next_pos = tmpf.tellg();//записываем в файловый указатель позицию для следующего элемента
 		file.seekg(0);//перемещаемся в начало старого файла
 		Announcement tmp;
 		for (unsigned int i = 0; i < size; i++)//проходим по старому списку
 		{
 			tmp.fileLoad(file);//загружаем вершину из старого файла
 			tmp.next = -1;
-			tmp.fileSave(temp_file);//записываем вершину во временный файл
+			tmp.fileSave(tmpf);//записываем вершину во временный файл
 
 			//связываем предыдущий элемент с последним
-			temp_file.seekg(prev_pos);
-			temp_file.write(reinterpret_cast<char*>(&next_pos), sizeof(next_pos));
+			tmpf.seekg(old_pos);
+			tmpf.write(reinterpret_cast<char*>(&next_pos), sizeof(next_pos));
 
-			prev_pos = next_pos;
-			temp_file.seekg(0, ios::end);	//переходим в конец временного файла и смещаем указатели
-			next_pos = temp_file.tellg();
+			old_pos = next_pos;
+			tmpf.seekg(0, ios::end);	//переходим в конец временного файла и смещаем указатели
+			next_pos = tmpf.tellg();
 		}
 		file.close();//закрываем файлы
-		temp_file.close();
-		remove("board.bin");//удаляем старый файл
-		rename("tmp.bin", "board.bin");//переименовываем временный файл
-		file.open("board.bin", ios::in | ios::out | ios::binary);//делаем его основным
+		tmpf.close();
+		remove("FILE.bin");//удаляем старый файл
+		rename("TMP.bin", "FILE.bin");//переименовываем временный файл
+		file.open("FILE.bin", ios::in | ios::out | ios::binary);//делаем его основным
 		size++;//увеличиваем размер списка
 		return;
 	}
 
-	long long int prev_pos = -1, next_pos = 0;
+	long long int old_pos = -1, next_pos = 0;
 	file.seekg(next_pos);//переходим в начало файла
 	Announcement tmp;
 	for (unsigned int i = 0; i < pos; i++)//проходим до нужного индекса
 	{
 		file.seekg(next_pos);//переходим к следующему файлу
 		tmp.fileLoad(file);//загружаем из файла товар
-		prev_pos = next_pos;//смещаем указатели
+		old_pos = next_pos;//смещаем указатели
 		next_pos = tmp.next;
 	}
 
 	file.seekg(0, ios::end);//переходим к концу файла
-	long long int cur_pos = file.tellg();	//сохраняем позицию нового элемента
+	long long int this_pos = file.tellg();	//сохраняем позицию нового элемента
 	elem.next = next_pos;
 	elem.fileSave(file);//загружаем новую вершину в файл
 
-	file.seekg(prev_pos);//связываем предыдущий элемент с новым
-	file.write(reinterpret_cast<char*>(&cur_pos), sizeof(cur_pos));
+	file.seekg(old_pos);//связываем предыдущий элемент с новым
+	file.write(reinterpret_cast<char*>(&this_pos), sizeof(this_pos));
 
 	file.flush();//сохраняем изменения в файле на диск
 	size++;//увеличиваем размер списка
 }
 
-bool List::removeAt(unsigned int pos)	//удаление в заданной позиции
+bool List::removeByIndex(unsigned int pos)	//удаление в заданной позиции
 {
-	if (pos >= size) return false; //если нет такого индекса то выходим не удаляя элементы
+	if (pos >= size)
+		return false; //если нет такого индекса то выходим не удаляя элементы
 
 	long long int last = -1, prev = -1;
 	Announcement tmp;
-	fstream temp_file("tmp.bin", ios::out | ios::binary);//создаём временный файл
+	fstream tmpf("TMP.bin", ios::out | ios::binary);//создаём временный файл
 	file.seekg(0);//переходим в начало старого файла
 	for (unsigned int i = 0; i < size; i++) //проходим по списку
 	{
@@ -150,25 +155,25 @@ bool List::removeAt(unsigned int pos)	//удаление в заданной позиции
 			continue;
 		}
 		//иначе добавляем элемент в новый файл
-		temp_file.seekg(0, ios::end);
-		last = temp_file.tellg();
+		tmpf.seekg(0, ios::end);
+		last = tmpf.tellg();
 		tmp.next = -1;
-		tmp.fileSave(temp_file);
+		tmp.fileSave(tmpf);
 		
 		if (prev != -1)//связываем последний добавленный с новым
 		{
-			temp_file.seekg(prev);
-			temp_file.write(reinterpret_cast<char*>(&last), sizeof(last));
+			tmpf.seekg(prev);
+			tmpf.write(reinterpret_cast<char*>(&last), sizeof(last));
 		}
 		prev = last;//смещаем указатель
 	}
 	//закрываем файлы
 	file.close();
-	temp_file.close();
+	tmpf.close();
 	//удаляем старый файл, делаем новый основным
-	remove("board.bin");
-	rename("tmp.bin", "board.bin");
-	file.open("board.bin", ios::in | ios::out | ios::binary);
+	remove("FILE.bin");
+	rename("TMP.bin", "FILE.bin");
+	file.open("FILE.bin", ios::in | ios::out | ios::binary);
 	size--;
 	return true;
 }
@@ -209,7 +214,7 @@ bool List::edit(Announcement& elem, unsigned int pos)
 		return true;
 	}
 	//если размер записи отличается
-	removeAt(pos);//удаляем старый элемент
+	removeByIndex(pos);//удаляем старый элемент
 	insert(elem, pos);//вставляем новый
 	return true;
 }
@@ -345,7 +350,7 @@ void List::sort()//сортировка
 	if (first_pos != 0)
 	{
 		Announcement tmp;
-		fstream temp_file("tmp.bin", ios::binary | ios::out);//создаём временный файл
+		fstream tmpf("TMP.bin", ios::binary | ios::out);//создаём временный файл
 		long long int temp_pos = -1, file_pos = first_pos, prev = -1;
 
 		for (unsigned int i = 0; i < size; i++)//проходим по списку и копируем элементы в новый файл
@@ -355,24 +360,24 @@ void List::sort()//сортировка
 			file_pos = tmp.next;	//сохраняем указатель на следующий элемент
 
 			tmp.next = -1;	//за новым элементом нет следующего
-			temp_pos = temp_file.tellg();	//сохраняем текущую позицию в новом файле как предыдущую для следующего элемента
-			tmp.fileSave(temp_file); //сохраняем новый элемент в новом файле
+			temp_pos = tmpf.tellg();	//сохраняем текущую позицию в новом файле как предыдущую для следующего элемента
+			tmp.fileSave(tmpf); //сохраняем новый элемент в новом файле
 
 			if (prev != -1)	//если есть предыдущий элемент
 			{
-				temp_file.seekg(prev);	//смещаемся к предыдущему элементу
-				temp_file.write(reinterpret_cast<char*>(&temp_pos), sizeof(temp_pos));	//устанавливаем указатель на новый элемент
+				tmpf.seekg(prev);	//смещаемся к предыдущему элементу
+				tmpf.write(reinterpret_cast<char*>(&temp_pos), sizeof(temp_pos));	//устанавливаем указатель на новый элемент
 			}
 			prev = temp_pos;	//сохраняем в считанном элементе указатель на предыдущий элемент
-			temp_file.seekg(0, ios::end);
+			tmpf.seekg(0, ios::end);
 		}
 		//закрываем файлы
 		file.close();
-		temp_file.close();
+		tmpf.close();
 		//удаляем старый файл, новый делаем основным
-		remove("board.bin");
-		rename("tmp.bin", "board.bin");
+		remove("FILE.bin");
+		rename("TMP.bin", "FILE.bin");
 
-		file.open("board.bin", ios::in | ios::out | ios::binary);
+		file.open("FILE.bin", ios::in | ios::out | ios::binary);
 	}
 }

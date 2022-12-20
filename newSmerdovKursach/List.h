@@ -16,7 +16,7 @@ public:
 	bool edit(Announcement& elem, unsigned int pos);//редактирование элемента в заданной позиции
 	void out();//вывод списка в консоль
 	long long int getNode(unsigned int pos, Announcement& element);//получение элемента по индексу
-	bool removeAt(unsigned int pos);//удаление товара в заданной позиции
+	bool removeByIndex(unsigned int pos);//удаление товара в заданной позиции
 	void findCategory(const string& ctgry);	//поиск по рубрике
 	void findText(const string& text);	//поиск по тексту объявления
 	void sort();//сортировка списка
