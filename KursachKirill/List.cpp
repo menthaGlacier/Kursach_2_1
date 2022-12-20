@@ -220,10 +220,14 @@ bool List::save(const char* fileName) {
 	}
 
 	// Пишем в файл до конца списка или до ошибки
-	Node* tail = head;
-	while (tail != nullptr && !file.fail()) {
-		file << *(tail->train);
-		tail = tail->next;
+	//Node* tail = head;
+	//while (tail != nullptr && !file.fail()) {
+	//	file << *(tail->train);
+	//	tail = tail->next;
+	//}
+
+	for (List::Iterator it = begin(); it != end() && !file.fail(); it++) {
+		file << (*it)->train;
 	}
 
 	file.close();
@@ -276,10 +280,10 @@ uint List::getSize() {
 // Конструктор по параметрам
 List::Iterator::Iterator(List& _list, uint _pos)
 	: itrList(_list), curNode(nullptr), pos(_pos) {
-	// Если позиция больше или равна размеру, назначим итератор на последний элемент списка
+	// Если позиция больше или равна размеру, назначим итератор на следующ й после последнего элемента списка
 	if (pos + 1 >= itrList.size) {
-		pos = itrList.size - 1;
-		curNode = itrList.last;
+		pos = itrList.size;
+		curNode = itrList.last->next;
 	} else if (pos != 0) { // Иначе дойдем до данного элемента
 		curNode = itrList.head;
 		for (uint i = 0; i < pos; i++) {
@@ -310,7 +314,7 @@ Node* List::Iterator::operator*() {
 
 // Преинкремент итератора
 List::Iterator& List::Iterator::operator++() {
-	if (pos + 1 != itrList.size) {
+	if (pos != itrList.size) {
 		curNode = curNode->next;
 		pos++;
 	}
