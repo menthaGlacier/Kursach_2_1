@@ -68,7 +68,7 @@ int main()
 							unsigned long long number = 0;
 							bool failed = false;
 							cin >> buffer;
-							for (size_t i = 0; i < buffer.size(); i++)	//преобразовываем полученные символы в числа
+							for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем полученные символы в числа
 							{
 								if (buffer[i] >= '0' && buffer[i] <= '9')
 								{
@@ -114,14 +114,14 @@ int main()
 			case '3':	//”даление объ€влени€
 			{
 				cout << "¬ведите номер объ€влени€: ";
-				size_t index = 0;
+				unsigned int pos = 0;
 				bool failed = false;
 				cin >> buffer;	//получаем строку от пользовател€
-				for (size_t i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
+				for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
 				{
 					if (buffer[i] >= '0' && buffer[i] <= '9')
 					{
-						index = index * 10 + buffer[i] - '0';
+						pos = pos * 10 + buffer[i] - '0';
 					}
 					else		//если символ не число
 					{
@@ -131,7 +131,7 @@ int main()
 					}
 				}
 				//если успешно получено число и существует элемент с таким индексом, то удал€ем его
-				if (failed == false && list.removeAt(index - 1) == true) { cout << "ќбъ€вление успешно удалено"; }
+				if (failed == false && list.removeAt(pos - 1) == true) { cout << "ќбъ€вление успешно удалено"; }
 				else { cout << "Ќет такого объ€влени€"; }
 				break;
 			}
@@ -139,14 +139,14 @@ int main()
 			case '4'://редактирование
 			{
 				cout << "¬ведите номер объ€влени€" << endl;
-				size_t index = 0;
+				unsigned int pos = 0;
 				bool failed = false;
 				cin >> buffer;	//получаем строку от пользовател€
-				for (size_t i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
+				for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем строку в число
 				{
 					if (buffer[i] >= '0' && buffer[i] <= '9')
 					{
-						index = index * 10 + buffer[i] - '0';
+						pos = pos * 10 + buffer[i] - '0';
 					}
 					else		//если символ не число
 					{
@@ -156,16 +156,16 @@ int main()
 					}
 				}
 
-				Announcement temp;
-				if (failed == true || list.getNode(index-1, temp) == -1)
+				Announcement tmp;
+				if (failed == true || list.getNode(pos-1, tmp) == -1)
 				{
 					cout << "Ќет такого объ€влени€"; 
 					break;
 				}
 
-				temp.inputAnnouncement(temp);//получаем ввод нового объ€влени€
+				tmp.inputAnnouncement(tmp);//получаем ввод нового объ€влени€
 				//пытаемс€ отредактировать объ€вление
-				if (list.edit(temp, index-1) == false) { cout << "Ќе удалось изменить" << endl; }
+				if (list.edit(tmp, pos-1) == false) { cout << "Ќе удалось изменить" << endl; }
 				else { cout << "»зменено" << endl; }
 				break;
 			}
@@ -196,8 +196,8 @@ int main()
 			}
 			case '8'://просмотр постранично
 			{
-				size_t index = 1;
-				Announcement temp;
+				unsigned int pos = 1;
+				Announcement tmp;
 				bool go_back = false;
 				while (!go_back)
 				{
@@ -207,9 +207,9 @@ int main()
 						break;
 					}
 
-					list.getNode(index - 1, temp);
-					cout << "“екущее объ€вление є" << index << endl;
-					temp.print();
+					list.getNode(pos - 1, tmp);
+					cout << "“екущее объ€вление є" << pos << endl;
+					tmp.print();
 					cout << endl;
 					cout << "¬ыберите действие:" << endl;
 					cout << "1. —ледующее" << endl;
@@ -224,9 +224,9 @@ int main()
 					{
 						case '1'://следующий
 						{
-							if (index < list.getSize())
+							if (pos < list.getSize())
 							{
-								index++;
+								pos++;
 							}
 							else
 							{
@@ -236,9 +236,9 @@ int main()
 						}
 						case '2'://предыдущий
 						{
-							if (index > 1)
+							if (pos > 1)
 							{
-								index--;
+								pos--;
 							}
 							else
 							{

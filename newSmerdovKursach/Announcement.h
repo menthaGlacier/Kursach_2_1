@@ -6,7 +6,7 @@ class Announcement// Класс "обьявление"
 	friend class List;	//даём доступ классу списка ко всем полям
 public:
 	static bool dateCheck(const string& date);	//метод проверки строки на возможность извлечения из неё даты
-	static void inputAnnouncement(Announcement& new_element);
+	static void inputAnnouncement(Announcement& elem);
 
 	Announcement();	//конструктор
 
@@ -18,17 +18,17 @@ public:
 	void setNumber(unsigned long long num);
 
 	void print() const;	//вывод элемента
-	bool saveToFile(fstream& file);
-	bool loadFromFile(fstream& file);
+	bool fileSave(fstream& f);
+	bool fileLoad(fstream& f);
 
 	bool operator<(const Announcement& right) const;
 	bool operator>(const Announcement& right) const;
 private:
 	//проверка даты на валидность
-	static bool isDateCorrect(unsigned short d, unsigned short m, unsigned short y);
+	static bool checkDate(unsigned short d, unsigned short m, unsigned short y);
 
 	//получение максимального дня для заданного месяца и года
-	static unsigned short getMaxDay(unsigned short m, unsigned short y);
+	static unsigned short getMonthDayLimit(unsigned short m, unsigned short y);
 
 	unsigned short day, month, year,	//дата
 		buy_sell;	//категория (купля/продажа)
