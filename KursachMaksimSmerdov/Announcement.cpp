@@ -9,7 +9,7 @@ Announcement::Announcement()
 	buy_sell = 1;
 	next = nullptr;
 }
-
+	
 void Announcement::setDate(unsigned short d, unsigned short m, unsigned short y)
 {
 	day = d;

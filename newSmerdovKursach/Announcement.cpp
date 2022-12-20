@@ -10,6 +10,7 @@ Announcement::Announcement()
 	next = -1;
 }
 
+// сеттеры
 void Announcement::setDate(unsigned short d, unsigned short m, unsigned short y)
 {
 	day = d;
@@ -36,28 +37,29 @@ void Announcement::setNumber(unsigned long long num)
 	number = num;
 }
 
+// кол-во дней в месяце
 unsigned short Announcement::getMonthDayLimit(unsigned short m, unsigned short y)
 {
 	unsigned short limit_month_day;
-	if (m == 2)	//если месяц февраль
+	if (m == 2)
 	{
 		if (y % 4 == 0)
-			limit_month_day = 29;	//если год високосный, то максимальный день 29
+			limit_month_day = 29;
 		else
-			limit_month_day = 28;	//иначе 28
+			limit_month_day = 28;
 	}
-	//если месяц нечётный (до августа) или чётный (начиная с сентября) 
+
 	else if ((m % 2 == 1 && m < 8) || (m % 2 == 0 && m >= 8))
-		limit_month_day = 31;//то максимальный день  31
+		limit_month_day = 31;
 	else
-		limit_month_day = 30; //иначе 30
+		limit_month_day = 30;
 
 	return limit_month_day;
 }
 
 bool Announcement::checkDate(unsigned short d, unsigned short m, unsigned short y)
 {
-	//Проверка дня, месяца и года на соответствие пределам
+	//Проверяем дату на соотвествие 
 	if (d <= 0 || d > 31)
 		return false;
 	if (m <= 0 || m > 12)
@@ -69,6 +71,7 @@ bool Announcement::checkDate(unsigned short d, unsigned short m, unsigned short 
 
 void Announcement::print() const
 {
+	//вывод объявления	
 	cout << "\n\tОбъявление от " << day << '.' << month << '.' << year;
 	cout << "\n\tВ рубрике: " << category;
 	if ((buy_sell == '1'))
@@ -79,14 +82,16 @@ void Announcement::print() const
 	cout << "\n\tКонтактный номер: " << number << endl;
 }
 
-bool Announcement::fileSave(fstream& f)	//запись объявления в файл
+//сохранение в файл
+bool Announcement::fileSave(fstream& f)
 {
+	// завершаем, если файл не открыт
 	if (!f.is_open())
-		return false;	//если файл закрыт выходим с ошибкой
+		return false;
 
-	f.clear();//очищение флагов состояния файлового потока
-	//побайтово записываем в файл поля класса вершины списка
-	//записываем численные значения
+	f.clear();//чистим флаги файлового потока
+
+	//пишем в файл данные фиксированной длины
 	f.write(reinterpret_cast<char*>(&next), sizeof(next));
 	f.write(reinterpret_cast<char*>(&day), sizeof(day));
 	f.write(reinterpret_cast<char*>(&month), sizeof(month));
@@ -94,34 +99,40 @@ bool Announcement::fileSave(fstream& f)	//запись объявления в файл
 	f.write(reinterpret_cast<char*>(&buy_sell), sizeof(buy_sell));
 	f.write(reinterpret_cast<char*>(&number), sizeof(number));
 
-	//записываем сначала размер строки, затем саму строку
+	//записываем перед строкой её размер для будущего чтения
 	unsigned int size = category.size();
 	f.write(reinterpret_cast<char*>(&size), sizeof(size));
-	if (size > 0)
+	if (size > 0) // можно не писать строку, если она пустая
 		f.write(category.c_str(), size);
 
+	//повторяем процедуру
 	size = ad_text.size();
 	f.write(reinterpret_cast<char*>(&size), sizeof(size));
-	
 	if (size > 0)
 		f.write(ad_text.c_str(), ad_text.size()); 
 
-	f.flush();//сбрасываем буфер потока в файл на диске
+	//сброс буфера потока
+	f.flush();
+	//в случае ошибки чистим флаги и завершаем
 	if (f.fail())
 	{
 		f.clear();
-		return false;//при сбое выходим с ошибкой
+		return false;
 	}
 
 	return true;
 }
 
-bool Announcement::fileLoad(fstream& f)	//чтение вершины списка из файла
+//получение вершин из файла
+bool Announcement::fileLoad(fstream& f)
 {
-	if (!f.is_open()) return false;//если файл закрыт выходим с ошибкой
-	f.clear();//очищение флагов состояния файлового потока 
-	f.flush();//сбрасываем буфер потока в файл на диске
-	//побайтово читаем из файла поля класса вершины списка
+	// завершаем, если файл не открыт
+	if (!f.is_open())
+		return false;
+	f.clear();//чистим флаги файлового потока
+	//сброс буфера потока
+	f.flush();
+	//читаем данные фиксированной длины
 	f.read(reinterpret_cast<char*>(&next), sizeof(next));
 	f.read((char*)&(day), sizeof(day));
 	f.read((char*)&(month), sizeof(month));
@@ -129,30 +140,34 @@ bool Announcement::fileLoad(fstream& f)	//чтение вершины списка из файла
 	f.read((char*)&(buy_sell), sizeof(buy_sell));
 	f.read((char*)&(number), sizeof(number));
 
+	//размер строки
 	unsigned int size = 0;
-	f.read(reinterpret_cast<char*>(&size), sizeof(size));//считываем размер строки
-	if (size > 0)//если размер не нулевой
+	f.read(reinterpret_cast<char*>(&size), sizeof(size));
+	//читаем строку, если она не пустая
+	if (size > 0)
 	{
-		char* read_string = new char[size];//выделяем память строке
-		f.read(read_string, size);//считываем строку
-		category.assign(read_string, size);//присваиваем строке в классе
-		delete[] read_string;//освобождаем память
+		char* read_string = new char[size];
+		f.read(read_string, size);
+		category.assign(read_string, size);//присваиваем текст строке
+		delete[] read_string;//избавляемся от временной строки
 	}
 
+	//повторяем процедуру
 	size = 0;
-	f.read(reinterpret_cast<char*>(&size), sizeof(size));	//считываем размер строки
-	if (size > 0)//если размер не нулевой
+	f.read(reinterpret_cast<char*>(&size), sizeof(size));
+	if (size > 0)
 	{
-		char* read_string = new char[size];//выделяем память строке
-		f.read(read_string, size);//считываем строку
-		ad_text.assign(read_string, size);//присваиваем строке в классе
-		delete[] read_string;//освобождаем память
+		char* read_string = new char[size];
+		f.read(read_string, size);
+		ad_text.assign(read_string, size);
+		delete[] read_string;
 	}
 
+	// если сбой, то чистим флаги и выходим
 	if (f.fail())
 	{
 		f.clear();
-		return false;//при сбое  выходим с ошибкой
+		return false;
 	}
 
 	return true;
@@ -160,7 +175,7 @@ bool Announcement::fileLoad(fstream& f)	//чтение вершины списка из файла
 
 bool Announcement::dateCheck(const string& date)
 {
-	if (date.size() < 10 || date.size() > 10)	//размер строки с датой в формате дд.мм.гггг = 10
+	if (date.size() < 10 || date.size() > 10)
 		return false;
 
 	unsigned short d = 0, m = 0, y = 0;
@@ -184,7 +199,7 @@ bool Announcement::dateCheck(const string& date)
 
 	return checkDate(d, m, y);	//возвращаем результат проверки на валидность
 }
-
+//сравнение даты меньше
 bool Announcement::operator<(const Announcement& right) const
 {
 	if (year == right.year)
@@ -202,6 +217,7 @@ bool Announcement::operator<(const Announcement& right) const
 	return false;
 }
 
+// сравниение даты больше
 bool Announcement::operator>(const Announcement& right) const
 {
 	if (year == right.year)
@@ -221,79 +237,79 @@ bool Announcement::operator>(const Announcement& right) const
 void Announcement::inputAnnouncement(Announcement& elem)
 {
 	string buffer;
-	while (true)	//получаем дату
+	while (true)
 	{
 		cout << "Введите дату (дд.мм.гггг)" << endl;
 		cin >> buffer;
-
-		if (!Announcement::dateCheck(buffer))	//делаем проверку даты
-		{
+		//дата должна быть верна
+		if (!Announcement::dateCheck(buffer))
 			cout << "Неверная дата" << endl;
-		}
-		else	//если проверка успешна, добавляем дату в элемент
+		else
 		{
-			unsigned short day = (buffer[0] - '0') * 10 + (buffer[1] - '0');			//преобразовываем день и месяц
-			unsigned short month = (buffer[3] - '0') * 10 + (buffer[4] - '0');	//из символов в числа
+			unsigned short day = (buffer[0] - '0') * 10 + (buffer[1] - '0');	
+			unsigned short month = (buffer[3] - '0') * 10 + (buffer[4] - '0');
 			unsigned short year = 0;
-			for (unsigned int i = 6; i < 10; i++)	//преобразовываем год
-			{
+			for (unsigned int i = 6; i < 10; i++)
 				year = year * 10 + buffer[i] - '0';
-			}
-			elem.setDate(day, month, year);	//устанавливаем дату в элементе
+
+			elem.setDate(day, month, year);
 			break;
 		}
 	}
 
-	while (true)	//получаем тип объявления
+	while (true)
 	{
-		cout
-			<< "Выберите тип объявления:\n"
-			<< "1. Купля\n"
-			<< "2. Продажа" << endl;
+		cout << "Выберите тип объявления:" << endl;
+		cout << "1. Купля" << endl << "2. Продажа" << endl;
 
-		char choice;
+		char choice; //символ ввода
 		cin >> choice;
-		if (choice == '1' || choice == '2')	//если ввод валидный
+		//записываем ввод,если он верный
+		if (choice == '1' || choice == '2')
 		{
-			elem.setBS(choice);		//устанавливаем тип объявления в элементе
+			elem.setBS(choice);
 			break;
 		}
+		// игнорируем лишние символы в буфере
 		else { cout << "Неверный тип" << endl; }
-		cin.ignore(256, '\n');	//игнорируем лишние символы, оставшиеся в потоке
+		cin.ignore(256, '\n');
 	}
 
+	// игнорируем лишние символы в буфере
 	cout << "Введите рубрику объявления" << endl;
 	cin.ignore(256, '\n');
 	getline(cin, buffer);
-
+	//записываем ввод
 	elem.setCategory(buffer);
 
-	while (true)	//устанавливаем номер телефона
+	while (true)
 	{
 		cout << "Введите контактный номер (без 8)" << endl;
 		unsigned long long number = 0;
-		bool badInput = false;
-		cin >> buffer;
-		for (unsigned int i = 0; i < buffer.size(); i++)	//преобразовываем полученные символы в числа
+		bool badInput = false; //флаг ошибки
+		cin >> buffer; //вводим и преобразовываем в цифры
+		for (unsigned int i = 0; i < buffer.size(); i++)
 		{
 			if (buffer[i] >= '0' && buffer[i] <= '9')
 			{
 				number = number * 10 + buffer[i] - '0';
 			}
-			else		//если символ не число
+			else //сообщаем ошибку и завершаем
 			{
 				cout << "Неверный номер" << endl;
-				badInput = true;	//устанавливаем флаг ошибки
-				break;	//прекращаем преобразование
+				badInput = true;
+				break;
 			}
 		}
-		if (badInput == false)	//если не была получена ошибка при преобразовании
+		//если ввод был верным, сохраняем номер
+		if (badInput == false)
 		{
-			elem.setNumber(number);	//устанавливаем номер
+			elem.setNumber(number);
 			break;
 		}
 	}
 
+	// игнорируем лишние символы в буфере
 	cout << "Введите текст объявления" << endl;
 	cin.ignore(256, '\n');
 	getline(cin, buffer);
