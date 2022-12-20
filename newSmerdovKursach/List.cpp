@@ -192,33 +192,33 @@ long long int List::getNode(unsigned int pos, Announcement& node)	//получение эл
 {
 	if (pos >= size)
 		return -1;	//если нет элемента возвращаем несуществующий файловый указатель
-	long long int pos = 0;
-	file.seekg(pos);	//переходим в начало файла
+	long long int tpos = 0;
+	file.seekg(tpos);	//переходим в начало файла
 	for (unsigned int i = 0; i < size; i++)	//проходим по списку
 	{
 		node.fileLoad(file);	//загружаем вершину из файла
 		if (i == pos)	//если индекс совпадает с нужным
 			break;//выходим из цикла
 
-		pos = node.next;	//переходим в к следующему элементу
+		tpos = node.next;	//переходим в к следующему элементу
 		file.seekg(node.next);
 	}
-	return pos; //возвращаем файловый указатель
+	return tpos; //возвращаем файловый указатель
 }
 
 //изменение элемента
 bool List::edit(Announcement& elem, unsigned int pos)
 {
-	long long int pos = -1;
+	long long int tpos = -1;
 	Announcement tmp;
-	pos = getNode(pos, tmp);//получаем элемент 
-	if (pos == -1)
+	tpos = getNode(pos, tmp);//получаем элемент 
+	if (tpos == -1)
 		return false;//выходим с ошибкой, если нет данного элемента
 
 	if ((tmp.ad_text.size() + tmp.category.size()) ==
 		(elem.ad_text.size() + elem.category.size()))
 	{
-		file.seekg(pos);	//переходим по файловому указателю
+		file.seekg(tpos);	//переходим по файловому указателю
 		elem.next = tmp.next;
 		elem.fileSave(file);//перезаписываем данные
 		return true;
