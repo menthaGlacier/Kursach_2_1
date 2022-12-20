@@ -21,7 +21,11 @@ List::~List() {
 
 	for (List::Iterator it = begin(); it != end(); it++) {
 		Node* temp = *it;
-		delete temp;
+		it++;
+
+		if (temp) {
+			delete temp;
+		}
 	}
 }
 
@@ -45,7 +49,7 @@ void List::insert(Train& _train) {
 void List::insert(Train& _train, uint index) {
 	// Если список пуст или индекс больше или равен размеру списка
 	// то используем метод вставки в конец списка
-	if (size == 0 || index >= size) {
+	if (size == 0 || index + 1 >= size) {
 		insert(_train);
 		return;
 	}
@@ -168,18 +172,12 @@ void List::order() {
 	// Используем пузырьковую сортировку
 	for (uint i = 0; i < size; i++) {
 		Node* tail = head;
-		for (uint j = i + 1; j < size; j++) {
-			if (tail->train > tail->next->train) {
-				Node* temp = tail->next;
-				tail->next = temp->next;
-				temp->next = tail;
-				if (tail == head) {
-					head = temp;
-				}
-
-				tail = temp;
+		for (uint j = 0; j < size - 1; j++) {
+			if (*(tail->train) > *(tail->next->train)) {
+				Train temp = *(tail->train);
+				*(tail->train) = *(tail->next->train);
+				*(tail->next->train) = temp;
 			}
-
 			tail = tail->next;
 		}
 	}
@@ -227,7 +225,7 @@ bool List::save(const char* fileName) {
 	//}
 
 	for (List::Iterator it = begin(); it != end() && !file.fail(); it++) {
-		file << (*it)->train;
+		file << *((*it)->train);
 	}
 
 	file.close();
