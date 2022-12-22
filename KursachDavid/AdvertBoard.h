@@ -16,9 +16,8 @@ private:
 	void updateArray();
 
 public:
-	/* Конструкторы */
+	/* Конструктор */
 	AdvertBoard();
-	AdvertBoard(int cap);
 
 	/* Деструктор */
 	~AdvertBoard();
