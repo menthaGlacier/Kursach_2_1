@@ -77,7 +77,7 @@ void AdvertBoard::insert(const Advert& advert, int pos)
 		updateArray();
 	}
 
-	/* Сдвигаем все элементы массива вправо */
+	/* Сдвигаем элементы массива вправо */
 	Advert temp = arr[pos];
 	for (int i = pos; i < size; i++)
 	{
@@ -87,7 +87,7 @@ void AdvertBoard::insert(const Advert& advert, int pos)
 	}
 
 	/* Вставляем элемент на нужную позицию, увеличиваем размер */
-	arr[pos] = advert;
+	arr[pos] = Advert(advert);
 	size++;
 }
 
@@ -181,7 +181,7 @@ void AdvertBoard::findCategory(const std::string cat) const
 	}
 }
 
-/* Поиск по шаблону искомого слова в тексте объявления */
+/* Поиск по тексту объявления */
 void AdvertBoard::findAdText(const std::string ad) const
 {
 	std::cout << "Search results:" << std::endl;
@@ -204,9 +204,9 @@ void AdvertBoard::sort()
 	/* Используем пузырьковую сортировку */
 	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < size - i - 1; j++)
+		for (int j = 0; j < size - 1 - i; j++)
 		{
-			if (arr[i] > arr[i])
+			if (arr[i] > arr[i + 1])
 			{
 				Advert temp = arr[i];
 				arr[i] = arr[i + 1];
