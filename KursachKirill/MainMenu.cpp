@@ -80,14 +80,9 @@ void MainMenu::scheduleInsert() {
 				cout << "Enter pos" << endl;
 				getline(cin, input);
 				uint pos = stoul(input);
-
-				if (pos >= schedule.getSize()) {
-					cout << "Input is incorrect" << endl;
-				} else {
-					inputTrain = enterTrain();
-					schedule.insert(inputTrain, pos);
-					return;
-				}
+				inputTrain = enterTrain();
+				schedule.insert(inputTrain, pos);
+				return;
 			}
 
 			break;
@@ -115,28 +110,23 @@ void MainMenu::scheduleRemove() {
 			cout << "Unknown input. Repeat" << endl;
 			continue;
 		}
-	}
 
-	switch (input[0]) {
-	case '1':
-		schedule.remove();
-		return;
-	case '2':
-		while (true) {
-			cout << "Enter pos" << endl;
-			getline(cin, input);
-			uint pos = stoul(input);
-
-			if (pos >= schedule.getSize()) {
-				cout << "Input is incorrect" << endl;
-			} else {
+		switch (input[0]) {
+		case '1':
+			schedule.remove();
+			return;
+		case '2':
+			while (true) {
+				cout << "Enter pos" << endl;
+				getline(cin, input);
+				uint pos = stoul(input);
 				schedule.remove(pos);
 				return;
 			}
+		default:
+			std::cout << "Unknown action" << std::endl;
+			break;
 		}
-	default:
-		std::cout << "Unknown action" << std::endl;
-		break;
 	}
 }
 
@@ -229,6 +219,7 @@ Train MainMenu::enterTrain() {
 			transit.push_back(tempTransit);
 		}
 
+		cin.ignore(255, '\n');
 		return Train (trainNum, dayOfWeeks, startHour, startMinute,
 			travelHours, travelMinutes, start, stop, transit);
 	}

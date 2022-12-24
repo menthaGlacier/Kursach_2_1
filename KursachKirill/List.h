@@ -45,7 +45,7 @@ public:
 	class Iterator {
 	public:
 		// Конструкторы
-		Iterator(List& _list, uint _pos);
+		Iterator(List& _list, uint _pos, bool isBegin);
 		Iterator(const Iterator& other);
 
 		// Операции присваивания и разыменования

@@ -69,51 +69,52 @@ void List::insert(const Product& _data, size_t index) {
 	size++;
 }
 
-void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохранением порядка
+// Вставка с сохранением порядка
+void List::insort(ProductFieldName field, const Product& _data)
 {
-	if (size <= 1) {	//если список содержит меньше двух элементов
-		this->insert(_data);//вставляем элемент в конец
+	if (size <= 1) { //если список содержит меньше двух элементов
+		this->insert(_data); //вставляем элемент в конец
 		return;
 	}
 	
-	//Определяем текущий порядок по двум первым элементам
+	// Определяем текущий порядок по двум первым элементам
 	bool reverse = false;//по возрастанию/по убыванию
 	//исходя из переданного критерия сортировки, сравниваем два  первых элемента
 	switch (field) {	
-		case ProductFieldName::Name: {//название товара
+		case ProductFieldName::Name: { //название товара
 			if (head->data->getName() > head->next->data->getName()) {
 				reverse = true;
 			}
 			break;
 		}
-		case ProductFieldName::Category: {//категория
+		case ProductFieldName::Category: { //категория
 			if (head->data->getCategory() > head->next->data->getCategory()) {
 				reverse = true;
 			}
 			break;
 		}
-		case ProductFieldName::Quantity: {//количество
+		case ProductFieldName::Quantity: { //количество
 			if (head->data->getQuantity() > head->next->data->getQuantity()) {
 				reverse = true;
 			}
 			break;
 		}
-		case ProductFieldName::Price: {//стоимость
+		case ProductFieldName::Price: { //стоимость
 			if (head->data->getPrice() > head->next->data->getPrice()) {
 				reverse = true;
 			}
 			break;
 		}
-		case ProductFieldName::Percentage: {//торговая надбавка
+		case ProductFieldName::Percentage: { //торговая надбавка
 			if (head->data->getPercentage() > head->next->data->getPercentage()) {
 				reverse = true;
 			}
 			break;
 		}
-		case ProductFieldName::Date: {//дата
+		case ProductFieldName::Date: { //дата
 			if (head->data->getYear() > head->next->data->getYear())
 				reverse = true;
-			else 	if (head->data->getYear() == head->next->data->getYear())
+			else if (head->data->getYear() == head->next->data->getYear())
 				if (head->data->getMonth() > head->next->data->getMonth())
 					reverse = true;
 				else if (head->data->getMonth() == head->next->data->getMonth())
@@ -126,39 +127,37 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 	//указатели на сравниваемый и новый элементы
 	Node* compared = head, * temp = new Node(_data);	
 
-	while (compared != nullptr) {//проходим по всему списку
-		bool found = false;//переменная отображающая, найдено ли место для вставки элемента
-		switch (field) {//сравниваем элемент с новым
-			case ProductFieldName::Name: {//название
+	while (compared != nullptr) { //проходим по всему списку
+		bool found = false; //переменная отображающая, найдено ли место для вставки элемента
+		switch (field) { //сравниваем элемент с новым
+			case ProductFieldName::Name: { //название
 				if (!reverse) {	//при возрастании
 					if (_data.getName() < compared->data->getName()) {
 						found = true; }
-				} else {//при убывании
+				} else { //при убывании
 					if (_data.getName() > compared->data->getName()) {
 						found = true; }
 				}
 				break;
 			}
-			case ProductFieldName::Category: {//категория
+			case ProductFieldName::Category: { //категория
 				if (!reverse) {
 					if (_data.getCategory() < compared->data->getCategory()) {
 						found = true;
 					}
-				}
-				else {
+				} else {
 					if (_data.getCategory() > compared->data->getCategory()) {
 						found = true;
 					}
 				}
 				break;
 			}
-			case ProductFieldName::Quantity: {//количество
+			case ProductFieldName::Quantity: { //количество
 				if (!reverse) {
 					if (_data.getQuantity() < compared->data->getQuantity()) {
 						found = true;
 					}
-				}
-				else {
+				} else {
 					if (_data.getQuantity() > compared->data->getQuantity()) {
 						found = true;
 					}
@@ -170,8 +169,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 					if (_data.getPrice() < compared->data->getPrice()) {
 						found = true;
 					}
-				}
-				else {
+				} else {
 					if (_data.getPrice() > compared->data->getPrice()) {
 						found = true;
 					}
@@ -183,8 +181,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 					if (_data.getPercentage() < compared->data->getPercentage()) {
 						found = true;
 					}
-				}
-				else {
+				} else {
 					if (_data.getPercentage() > compared->data->getPercentage()) {
 						found = true;
 					}
@@ -195,7 +192,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 				if (!reverse) {
 					if (_data.getYear() < compared->data->getYear())
 						found = true;
-					else 	if (_data.getYear() == compared->data->getYear())
+					else if (_data.getYear() == compared->data->getYear())
 						if (_data.getMonth() < compared->data->getMonth())
 							found = true;
 						else if (_data.getMonth() == compared->data->getMonth())
@@ -204,7 +201,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 				} else {
 					if (_data.getYear() > compared->data->getYear())
 						found = true;
-					else 	if (_data.getYear() == compared->data->getYear())
+					else if (_data.getYear() == compared->data->getYear())
 						if (_data.getMonth() > compared->data->getMonth())
 							found = true;
 						else if (_data.getMonth() == compared->data->getMonth())
@@ -216,11 +213,14 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 		}
 		//если при соблюдении порядка новый элемент
 		//должен находится в данном месте, прекращаем обход списка
-		if (found) { break; }	
-		compared = compared->next;//в ином случае переходим к следующему
+		if (found) {
+			break;
+		}	
+		
+		compared = compared->next; //в ином случае переходим к следующему
 	}
 
-	if (compared != nullptr) {	//если новый элемент не последний
+	if (compared != nullptr) { //если новый элемент не последний
 		//если новый элемент становится на место первого, меняем головной указатель
 		if (compared == head) head = temp; 
 		//иначе меняем указатель на следующий элемент элемента перед новым
@@ -230,7 +230,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 		temp->next = compared;
 		//связываем следующий элемент с новым
 		compared->prev = temp;
-	} else {	//если новый элемент последний
+	} else { //если новый элемент последний
 		//связываем его с предыдущим
 		//и ставим на него указатель на последний элемент
 		last->next = temp;	
@@ -238,7 +238,7 @@ void List::insort(ProductFieldName field, const Product& _data)	//вставка с сохр
 		temp->next = nullptr;
 		last = temp;
 	}
-	size++;//увеличиваем размер списка
+	size++; //увеличиваем размер списка
 }
 
 // Удаление элемента с конца списка
@@ -298,52 +298,52 @@ void List::remove(size_t index) {
 
 // Поиск элемента по полю через меню
 void List::find(ProductFieldName field, const Product& _data) const {
-	Node* current = head;//указатель на текущий элемент при обходе списка
+	Node* tail = head;//указатель на текущий элемент при обходе списка
 
-	for (size_t i = 0; current != nullptr; i++, current = current->next) {//проходим по всему списку
+	for (size_t i = 0; tail != nullptr; i++, tail = tail->next) {//проходим по всему списку
 		switch (field) {	//сравниваем переданный объект с текущим по заданному критерию
 			//если заданный критерий совпадает, выводим  найденный объект
 		case ProductFieldName::Name://название
-			if (current->data->getName() == _data.getName()) {
+			if (tail->data->getName() == _data.getName()) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
 		case ProductFieldName::Category://категория
-			if (current->data->getCategory() == _data.getCategory()) {
+			if (tail->data->getCategory() == _data.getCategory()) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
 		case ProductFieldName::Quantity://количество
-			if (current->data->getQuantity() == _data.getQuantity()) {
+			if (tail->data->getQuantity() == _data.getQuantity()) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
 		case ProductFieldName::Price://стоимость
-			if (current->data->getPrice() == _data.getPrice()) {
+			if (tail->data->getPrice() == _data.getPrice()) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
 		case ProductFieldName::Percentage://надбавка
-			if (current->data->getPercentage() == _data.getPercentage()) {
+			if (tail->data->getPercentage() == _data.getPercentage()) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
 		case ProductFieldName::Date://дата
-			if ((current->data->getDay() == _data.getDay())
-				&& (current->data->getMonth() == _data.getMonth())
-				&& (current->data->getYear() == _data.getYear())) {
+			if ((tail->data->getDay() == _data.getDay())
+				&& (tail->data->getMonth() == _data.getMonth())
+				&& (tail->data->getYear() == _data.getYear())) {
 					std::cout << "#" << i << " ";
-					current->data->output();
+					tail->data->output();
 					std::cout << std::endl;
 			}
 			break;
@@ -368,7 +368,8 @@ Product* List::find(size_t index) const {
 	return (tail->data);
 }
 
-void List::sort(ProductFieldName field, bool reverse) {//сортировка по критерию
+// Сортировка по критерию
+void List::sort(ProductFieldName field, bool reverse) {
 	if (!head) { return; }//если список пустой возвращаемся
 
 	//при сортировке создаём из указателей новый список,
@@ -473,7 +474,8 @@ void List::output() const {
 	}
 }
 
-bool List::save(const std::string& file_name)	//сохранение списка в файл
+// Сохранение списка в файл
+bool List::save(const std::string& file_name)
 {
 	//открываем двоичный файл с переданным названием
 	std::fstream file(file_name, std::ios::binary | std::ios::out);
@@ -516,7 +518,8 @@ bool List::save(const std::string& file_name)	//сохранение списка в файл
 	return true;
 }
 
-bool List::load(const std::string& file_name)	//загрузка из файла
+// Загрузка из файла
+bool List::load(const std::string& file_name)
 {
 	//открываем двоичный файл с переданным названием
 	std::fstream file(file_name, std::ios::binary | std::ios::in);
@@ -592,6 +595,7 @@ bool List::load(const std::string& file_name)	//загрузка из файла
 	return true;
 }
 
-size_t List::getSize() const {//получение размера списка
+// Получение размера списка
+size_t List::getSize() const {
 	return size;
 }

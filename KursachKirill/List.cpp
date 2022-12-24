@@ -19,13 +19,10 @@ List::~List() {
 	//	delete temp;
 	//}
 
-	for (List::Iterator it = begin(); it != end(); it++) {
+	for (List::Iterator it = begin(); it != end();) {
 		Node* temp = *it;
 		it++;
-
-		if (temp) {
-			delete temp;
-		}
+		delete temp;
 	}
 }
 
@@ -276,8 +273,16 @@ uint List::getSize() {
 }
 
 // Конструктор по параметрам
-List::Iterator::Iterator(List& _list, uint _pos)
+List::Iterator::Iterator(List& _list, uint _pos, bool isBegin = false)
 	: itrList(_list), curNode(nullptr), pos(_pos) {
+
+	// Если необходимо получить первый элемент - делаем это
+	if (isBegin) {
+		pos = 0;
+		curNode = itrList.head;
+		return;
+	}
+
 	// Если позиция больше или равна размеру, назначим итератор на следующ й после последнего элемента списка
 	if (pos + 1 >= itrList.size) {
 		pos = itrList.size;
@@ -350,7 +355,7 @@ uint List::Iterator::getPos() {
 
 // Получение начала списка для итератора
 List::Iterator List::begin() {
-	return List::Iterator(*this, 0);
+	return List::Iterator(*this, 0, true);
 }
 
 // Получение конца списка для итератора
