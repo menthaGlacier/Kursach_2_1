@@ -26,6 +26,8 @@ public:
 	// Сортировка
 	void sort();
 
+	//
+	void print();
 private:
 	std::string name; // Имя файла
 	std::fstream file; // Файловый поток
