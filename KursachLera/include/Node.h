@@ -7,6 +7,17 @@
 // Класс для узла списка
 class Node {
 public:
+	// Конструктор по умолчанию
+	Node();
+
+	// Геттеры
+	long long int getNext();
+	Train getData();
+
+	// Сеттеры
+	void setNext(long long next);
+	void setData(const Train& data);
+
 	// Записать узел в файл
 	void write(std::fstream& file);
 	

@@ -1,5 +1,30 @@
 #include "../include/Node.h"
 
+// Конструктор по умолчанию узла списка
+Node::Node() {
+	this->next = 0;
+}
+
+// Получить позицию следующего узла
+long long int Node::getNext() {
+	return next;
+}
+
+// Получить хранимый объект
+Train Node::getData() {
+	return data;
+}
+
+// Установить позицию следующего элемента
+void Node::setNext(long long int next) {
+	this->next = next;
+}
+
+// Установить хранимый объект
+void Node::setData(const Train& data) {
+	this->data = data;
+}
+
 // Получение размера файла
 unsigned int Node::size() {
 	return sizeof(next) + data.size();
