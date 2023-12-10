@@ -12,6 +12,9 @@ public:
 	// Деструктор
 	~FileList();
 
+	// Метод для открытия файла
+	void openFile(const std::string& name);
+
 	// Метод для создания файла
 	void createFile(const std::string& name);
 

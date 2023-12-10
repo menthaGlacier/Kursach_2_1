@@ -112,11 +112,11 @@ void Train::setDepartureTimeHours(unsigned int departureTimeHours) {
 void Train::setDepartureTimeMinutes(unsigned int departureTimeMinutes) {
 	// Минуты не могут превышать значение в 59
 	if (departureTimeMinutes > 59) {
-		this->travelTimeMinutes = 59;
+		this->departureTimeMinutes = 59;
 		return;
 	}
 
-	this->departureTimeMinutes = departureTimeHours;
+	this->departureTimeMinutes = departureTimeMinutes;
 }
 
 // Установить часы времени в пути
@@ -226,14 +226,14 @@ Train& Train::operator=(const Train& train) {
 bool Train::operator==(const Train& train) {
 	// Проверяем, равны ли поля между текущим и полученным объектом
 	return (
-		this->trainNumber != train.trainNumber ||
-		this->daysOfWeek != train.daysOfWeek ||
-		this->departureTimeHours != train.departureTimeHours ||
-		this->departureTimeMinutes != train.departureTimeMinutes ||
-		this->travelTimeHours != train.travelTimeHours ||
-		this->travelTimeMinutes != train.travelTimeMinutes ||
-		this->departureStationNumber != train.departureStationNumber ||
-		this->destinationStationNumber != train.destinationStationNumber ||
+		this->trainNumber != train.trainNumber &&
+		this->daysOfWeek != train.daysOfWeek &&
+		this->departureTimeHours != train.departureTimeHours &&
+		this->departureTimeMinutes != train.departureTimeMinutes &&
+		this->travelTimeHours != train.travelTimeHours &&
+		this->travelTimeMinutes != train.travelTimeMinutes &&
+		this->departureStationNumber != train.departureStationNumber &&
+		this->destinationStationNumber != train.destinationStationNumber &&
 		this->transit != train.transit
 	);
 }
@@ -297,14 +297,15 @@ std::fstream& operator>>(std::fstream& file, Train& train) {
 	// Читаем размер строки
 	unsigned int stringSize = 0;
 	file.read((char*)(&stringSize), sizeof(stringSize));
-	
+
 	// Если строка имеет размер больше 0, читаем её содержимое
 	if (stringSize > 0) {
 		// Строка, в которую будет записана прочтенная строка
-		char* fileString = new char[stringSize];
+		char* fileString = new char[stringSize + 1];
 
 		// Читаем строку с прочтенным ранее размером
 		file.read(fileString, stringSize);
+		fileString[stringSize] = '\0';
 
 		// Создаем из си-строки std::string строку и передаем её объекту
 		std::string str(fileString);
