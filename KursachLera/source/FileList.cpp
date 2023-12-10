@@ -44,7 +44,7 @@ void FileList::createFile(const std::string& name) {
 		exit(0); // Завершаем программу
 	}
 
-	// Записываем в файл его размер и позицию первого элемента
+	// Записываем в файл размер списка и позицию первого узла
 	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
 	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
 
@@ -69,7 +69,7 @@ void FileList::insert(const Train& data) {
 		first = sizeof(size) + sizeof(first);
 		file.seekg(first);
 	} else {
-		// Переходим на первый элемент
+		// Переходим на первый узел
 		file.seekg(first);
 
 		// Доходим до конца списка
@@ -89,7 +89,7 @@ void FileList::insert(const Train& data) {
 
 	// Если список не был пуст
 	if (tailPosition != -1) {
-		// Переходим на хвост списка и перезаписываем указатель на позицию следующего элемента
+		// Переходим на хвост списка и перезаписываем указатель на позицию следующего узла
 		file.seekg(tailPosition);
 		tail.setNext(insertPosition);
 		file << tail;
@@ -98,10 +98,12 @@ void FileList::insert(const Train& data) {
 	// Увеличиваем размер списка на единицу
 	size++;
 
-	// Переходим в начало файла и перезаписываем размер и позицию первого элемента
+	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	file.seekg(0);
 	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
 	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
+
+	file.clear();
 }
 
 void FileList::insert(const Train& data, unsigned int index) {
@@ -129,7 +131,7 @@ void FileList::insert(const Train& data, unsigned int index) {
 		file.seekg(0, std::ios::end); // Переходим в конец файла
 		insertPosition = file.tellg(); // Сохраняем позицию для нового узла
 		file << insert; // Записываем новый первый узел
-		first = insertPosition; // Обновляем позицию первого элемента
+		first = insertPosition; // Обновляем позицию первого узла
 	} else {
 		// Если вставка идёт на индекс 1, то хвостом будет первый узел
 		if (index == 1) {
@@ -137,6 +139,8 @@ void FileList::insert(const Train& data, unsigned int index) {
 			tailPosition = file.tellg(); // Сохраняем позицию первого узла
 			file >> tail; // Читаем первый узел
 		} else {
+			file.seekg(first); // Переходим на первый узел
+
 			// Доходим до узла, предшествующего индексу позиции вставки
 			for (unsigned int i = 0; i + 1 < index; i++) {
 				tailPosition = file.tellg(); // Сохраняем позицию начала очередного узла
@@ -164,25 +168,13 @@ void FileList::insert(const Train& data, unsigned int index) {
 	// Увеличиваем размер списка на единицу
 	size++;
 
-	// Переходим в начало файла и перезаписываем размер и позицию первого элемента
+	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	file.seekg(0);
 	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
 	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
 }
 
 //
-void FileList::print() {
-	Node tail; // Хвост для обхода списка
-
-	std::cout << "Движение поездов:" << std::endl;
-	file.seekg(first); // Переходим к первому элементу
-	while (tail.getNext() != -1) {
-		file >> tail;
-		tail.getData().print();
-		file.seekg(tail.getNext());
-	}
-}
-
 void FileList::remove() {
 	// Временные переменные для хранения хвоста списка и его позиции
 	Node tail;
@@ -205,9 +197,85 @@ void FileList::remove() {
 
 		// Производим создание нового файла с идентичным именем
 		file.close(); // Закрываем текущий файл
-		std::remove(name); // Удаляем его
+		std::remove(name.c_str()); // Удаляем его
 		openFile(name); // Создаем и открываем новый файл
 		
 		return;
 	}
+
+	//
+	std::fstream newList("new", std::ios::binary | std::ios::out);
+	if (!newList.is_open()) {
+		std::cout << "Не удалось создать файл" << std::endl;
+		exit(0); // Завершаем программу
+	}
+
+	// Записываем в новый файл размер списка и позицию первого узла
+	newList.write((const char*)(&size), sizeof(size));
+	newList.write((const char*)(&first), sizeof(first));
+
+	// Переходим в конец нового файла для записи узлов
+	newList.seekg(0, std::ios::end);
+	file.clear(); //FIXME
+
+	file.seekg(first);
+	insertPosition = newList.tellg();
+	first = insertPosition;
+	file >> insert;
+	newList << insert;
+
+	//
+	for (unsigned int i = 0; i < size + 1; i++) {
+		tailPosition = insertPosition;
+		tail = insert;
+		file.seekg(0, std::ios::end);
+		insertPosition = newList.tellg();
+		file >> insert;
+		
+	}
+
+	// LOL SAID ME
+	// LMAO
+	// FIXME FINISH THIS!!!!
+}
+
+// Поиск всех поездов, следующих до станции
+void FileList::find(unsigned int station) {
+	Node tail; // Хвост для обхода списка
+
+	std::cout << "Все поезда следующие до станции " << station << ":" << std::endl;
+	if (size == 0) {
+		return;
+	}
+
+	file.seekg(first); // Переходим к первому узлу
+	while (tail.getNext() != -1) {
+		file >> tail;
+		if (tail.getData().getDestinationStationNumber() == station) {
+			tail.getData().print();
+		}
+
+		file.seekg(tail.getNext());
+	}
+
+	file.clear();
+}
+
+//
+void FileList::print() {
+	Node tail; // Хвост для обхода списка
+
+	std::cout << "Движение поездов:" << std::endl;
+	if (size == 0) {
+		return;
+	}
+
+	file.seekg(first); // Переходим к первому узлу
+	while (tail.getNext() != -1) {
+		file >> tail;
+		tail.getData().print();
+		file.seekg(tail.getNext());
+	}
+
+	file.clear();
 }

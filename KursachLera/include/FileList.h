@@ -29,6 +29,9 @@ public:
 	// Сортировка
 	void sort();
 
+	// Поиск всех поездов, следующих до станции
+	void find(unsigned int station);
+
 	//
 	void print();
 private:
