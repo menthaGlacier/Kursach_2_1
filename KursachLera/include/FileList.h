@@ -26,14 +26,20 @@ public:
 	void remove(); // Удаление с конца
 	void remove(unsigned int index); // Удаление по логическому номеру
 
+	// Обновить объект узла
+	void update(const Train& data, unsigned int index);
+
 	// Сортировка
 	void sort();
 
 	// Поиск всех поездов, следующих до станции
 	void find(unsigned int station);
 
-	//
+	// Вывод списка
 	void print();
+
+	// Постраничный просмотр списка
+	void pageViewPrint();
 private:
 	std::string name; // Имя файла
 	std::fstream file; // Файловый поток

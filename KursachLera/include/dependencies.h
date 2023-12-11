@@ -3,6 +3,8 @@
 
 // Заголовочный файл, хранящий подключение других заголовочных файлов
 
+using namespace std;
+
 #include <iostream>
 #include <fstream>
 #include <string>

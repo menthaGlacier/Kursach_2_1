@@ -174,7 +174,7 @@ void FileList::insert(const Train& data, unsigned int index) {
 	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
 }
 
-//
+// Удаление узла с конца списка (НЕ ЗАКОНЧЕНО)
 void FileList::remove() {
 	// Временные переменные для хранения хвоста списка и его позиции
 	Node tail;
@@ -203,7 +203,7 @@ void FileList::remove() {
 		return;
 	}
 
-	//
+	// Создаем новый файл для списка, в который будет перемещен текущий
 	std::fstream newList("new", std::ios::binary | std::ios::out);
 	if (!newList.is_open()) {
 		std::cout << "Не удалось создать файл" << std::endl;
@@ -224,7 +224,7 @@ void FileList::remove() {
 	file >> insert;
 	newList << insert;
 
-	//
+	// да треш
 	for (unsigned int i = 0; i < size + 1; i++) {
 		tailPosition = insertPosition;
 		tail = insert;
@@ -234,9 +234,41 @@ void FileList::remove() {
 		
 	}
 
-	// LOL SAID ME
-	// LMAO
-	// FIXME FINISH THIS!!!!
+	// FIXME ЗАКОНЧИТЬ!!!!
+}
+
+// Удаление узла по логическому номеру
+void FileList::remove(unsigned int index) {
+	// начать и доделать лол
+}
+
+// Обновить объект узла
+void FileList::update(const Train& data, unsigned int index) {
+	// Временные переменные для хранения хвоста списка и его позиции
+	Node tail;
+	long long int tailPosition = -1;
+
+	Node insert; // Новый узел, который мы будем вставлять
+	long long int insertPosition = -1;
+	insert.setNext(-1); // Следующего узел неизвестен
+	insert.setData(data); // Присваиваем объект
+
+	//
+	if (index >= size) {
+		std::cout << "Недопустимый логический номер" << std::endl;
+	}
+
+	// Доходим до узла, предшествующего индексу позиции вставки
+	for (unsigned int i = 0; i + 1 < index; i++) {
+		tailPosition = file.tellg(); // Сохраняем позицию начала очередного узла
+		file >> tail; // Читаем очередной узел
+		file.seekg(tail.getNext()); // Переходим на следующий узел
+	}
+}
+
+// Сортировка списка
+void FileList::sort() {
+	// начать и доделать часть 2 лол
 }
 
 // Поиск всех поездов, следующих до станции
@@ -261,7 +293,7 @@ void FileList::find(unsigned int station) {
 	file.clear();
 }
 
-//
+// Вывод списка
 void FileList::print() {
 	Node tail; // Хвост для обхода списка
 
@@ -278,4 +310,9 @@ void FileList::print() {
 	}
 
 	file.clear();
+}
+
+// Постраничный просмотр списка
+void pageViewPrint() {
+
 }
