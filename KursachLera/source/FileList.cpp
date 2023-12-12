@@ -98,6 +98,8 @@ void FileList::insert(const Train& data) {
 	// Увеличиваем размер списка на единицу
 	size++;
 
+	file.clear();
+
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	file.seekg(0);
 	file.write((const char*)(&size), sizeof(size));
@@ -303,7 +305,114 @@ void FileList::update(const Train& data, unsigned int index) {
 
 // Сортировка списка
 void FileList::sort() {
-	// начать и доделать часть 2 лол
+	Node tail; // Узел, предшествующий левом
+	Node left; // Левый узел
+	Node right; // Правый узел
+
+	long long int tailPosition;
+	long long int leftPosition;
+	long long int rightPosition;
+
+	file.seekg(first);
+
+	if (size < 2) {
+		cout << "Недостаточно узлов для сортировки" << endl;
+		return;
+	}
+
+	// Если в списке всего два узла, их сразу же можно отсортировать
+	if (size == 2) {
+		leftPosition = file.tellg(); // Запоминаем позицию левого узла
+		file >> left; // Читаем его
+		file.seekg(left.getNext()); // Переходим к следующему, правому узлу
+		rightPosition = file.tellg(); // Также запоминаем позицию правого узла
+		file >> right; // Также читаем его
+
+		// Сравниваем узлы и производим перестановку, если условие для сортировки подходит
+		if (left > right) {
+			// Теперь левый узел указывает туда, куда указывал правый
+			// А правый узел указывает на позицию левого узла
+			left.setNext(right.getNext());
+			right.setNext(leftPosition);
+
+			// Перезаписываем указатели в списке
+			file.seekg(leftPosition);
+			file << left;
+			file.seekg(rightPosition);
+			file << right;
+
+			// Обновляем позицию первого элемента
+			first = rightPosition;
+
+			// Переходим в начало файла и обновляем данные списка
+			file.seekg(0);
+			file.write((const char*)(&size), sizeof(size));
+			file.write((const char*)(&first), sizeof(first));
+		}
+
+		return;
+	}
+
+	rightPosition = file.tellg();
+	file >> right;
+	while (right.getNext() != -1) {
+		tailPosition = leftPosition;
+		tail = left;
+		leftPosition = rightPosition;
+		left = right;
+		rightPosition = file.tellg();
+		file >> right;
+
+		if (left > right) {
+			//
+			if (leftPosition == first) {
+					first = rightPosition;
+				left.setNext(right.getNext());
+				right.setNext(leftPosition);
+
+				// Перезаписываем указатели в списке
+				file.seekg(leftPosition);
+				file << left;
+				file.seekg(rightPosition);
+				file << right;
+
+				Node temp(left);
+				unsigned int tempPosition = leftPosition;
+				left = right;
+				leftPosition = rightPosition;
+				right = temp;
+				rightPosition = tempPosition;
+				file.seekg(right.getNext());
+			} else {
+				left.setNext(right.getNext());
+				right.setNext(leftPosition);
+
+				// Перезаписываем указатели в списке
+				file.seekg(leftPosition);
+				file << left;
+				file.seekg(rightPosition);
+				file << right;
+
+				Node temp(left);
+				unsigned int tempPosition = leftPosition;
+				left = right;
+				leftPosition = rightPosition;
+				right = temp;
+				rightPosition = tempPosition;
+					tail.setNext(leftPosition);
+					file.seekg(tailPosition);
+					file << tail;
+				file.seekg(right.getNext());
+			}
+		}
+	}
+
+	file.clear();
+
+	// Переходим в начало файла и обновляем данные списка
+	file.seekg(0);
+	file.write((const char*)(&size), sizeof(size));
+	file.write((const char*)(&first), sizeof(first));
 }
 
 // Поиск всех поездов, следующих до станции

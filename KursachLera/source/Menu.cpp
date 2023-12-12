@@ -119,6 +119,7 @@ void Menu::mainMenu() {
 
 			break;
 		} else if (input == "3") {
+			list->sort();
 			break;
 		} else if (input == "4") {
 			Train train; // Объект для ввода
