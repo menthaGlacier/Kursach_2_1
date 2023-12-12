@@ -41,7 +41,7 @@ bool Node::operator<(const Node& right) {
 }
 
 // Перегрузка оператора записи в файловый поток узла списка
-std::fstream& operator<<(std::fstream& file, const Node& node) {
+fstream& operator<<(fstream& file, const Node& node) {
 	// Записываем в файл позицию следующего элемента
 	file.write((const char*)(&node.next), sizeof(node.next));
 	
@@ -53,7 +53,7 @@ std::fstream& operator<<(std::fstream& file, const Node& node) {
 }
 
 // Перегрузка оператора чтения из файлового потока узла списка
-std::fstream& operator>>(std::fstream& file, Node& node) {
+fstream& operator>>(fstream& file, Node& node) {
 	// Читаем из файла позицию следующего элемента
 	file.read((char*)(&node.next), sizeof(node.next));
 

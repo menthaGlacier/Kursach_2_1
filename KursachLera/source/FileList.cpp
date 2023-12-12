@@ -1,7 +1,7 @@
 #include "../include/FileList.h"
 
 // Конструктор по параметрам для списка, где параметр - название файла
-FileList::FileList(const std::string& name) {
+FileList::FileList(const string& name) {
 	this->name = name;
 	this->size = 0;
 	this->first = 0;
@@ -23,24 +23,24 @@ FileList::~FileList() {
 }
 
 // Открытие файла
-void FileList::openFile(const std::string& name) {
+void FileList::openFile(const string& name) {
 	// Открываем файл с заданным именем в режиме бинарного файла для чтения и записи
-	file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+	file.open(name, ios::binary | ios::in | ios::out);
 
 	// Если файл не открылся, он, вероятно, не создан
 	if (!file.is_open()) {
 		// Создаем файл и открываем его для работы
 		createFile(name);
-		file.open(name, std::ios::binary | std::ios::in | std::ios::out);
+		file.open(name, ios::binary | ios::in | ios::out);
 	}
 }
 
 // Создание файла с заданным именем
-void FileList::createFile(const std::string& name) {
+void FileList::createFile(const string& name) {
 	// Открытие в режими записи, если файла не существует, создаст его
-	file.open(name, std::ios::binary | std::ios::out);
+	file.open(name, ios::binary | ios::out);
 	if (!file.is_open()) {
-		std::cout << "Не удалось создать файл" << std::endl;
+		cout << "Не удалось создать файл" << endl;
 		exit(0); // Завершаем программу
 	}
 
@@ -83,7 +83,7 @@ void FileList::insert(const Train& data) {
 	// Очищаем поток от флага конца файла
 	file.clear();
 
-	file.seekg(0, std::ios::end); // Переходим в конец файла
+	file.seekg(0, ios::end); // Переходим в конец файла
 	insertPosition = file.tellg(); // Сохраняем позицию нового узла
 	file << insert; // Вставляем новый узел
 
@@ -128,7 +128,7 @@ void FileList::insert(const Train& data, unsigned int index) {
 		file.seekg(first); // Переходим к текущему первому узлу
 		tailPosition = file.tellg(); // Сохраняем его позицию
 		insert.setNext(tailPosition); // Новый первый узел указывает на текущий
-		file.seekg(0, std::ios::end); // Переходим в конец файла
+		file.seekg(0, ios::end); // Переходим в конец файла
 		insertPosition = file.tellg(); // Сохраняем позицию для нового узла
 		file << insert; // Записываем новый первый узел
 		first = insertPosition; // Обновляем позицию первого узла
@@ -152,7 +152,7 @@ void FileList::insert(const Train& data, unsigned int index) {
 		// Новый узел будет указывать на узел следующий за хвостом
 		insert.setNext(tail.getNext());
 		
-		file.seekg(0, std::ios::end); // Переходим в конец файла
+		file.seekg(0, ios::end); // Переходим в конец файла
 		insertPosition = file.tellg(); // Сохраняем позицию нового узла
 		file << insert; // Вставляем новый узел
 
@@ -175,7 +175,7 @@ void FileList::insert(const Train& data, unsigned int index) {
 }
 
 // Удаление узла с конца списка (НЕ ЗАКОНЧЕНО)
-void FileList::remove() {
+void FileList::deletion() {
 	// Временные переменные для хранения хвоста списка и его позиции
 	Node tail;
 	long long int tailPosition = -1;
@@ -197,16 +197,16 @@ void FileList::remove() {
 
 		// Производим создание нового файла с идентичным именем
 		file.close(); // Закрываем текущий файл
-		std::remove(name.c_str()); // Удаляем его
+		remove(name.c_str()); // Удаляем его
 		openFile(name); // Создаем и открываем новый файл
 		
 		return;
 	}
 
 	// Создаем новый файл для списка, в который будет перемещен текущий
-	std::fstream newList("new", std::ios::binary | std::ios::out);
+	fstream newList("new", ios::binary | ios::out);
 	if (!newList.is_open()) {
-		std::cout << "Не удалось создать файл" << std::endl;
+		cout << "Не удалось создать файл" << endl;
 		exit(0); // Завершаем программу
 	}
 
@@ -215,7 +215,7 @@ void FileList::remove() {
 	newList.write((const char*)(&first), sizeof(first));
 
 	// Переходим в конец нового файла для записи узлов
-	newList.seekg(0, std::ios::end);
+	newList.seekg(0, ios::end);
 	file.clear(); //FIXME
 
 	file.seekg(first);
@@ -228,7 +228,7 @@ void FileList::remove() {
 	for (unsigned int i = 0; i < size + 1; i++) {
 		tailPosition = insertPosition;
 		tail = insert;
-		file.seekg(0, std::ios::end);
+		file.seekg(0, ios::end);
 		insertPosition = newList.tellg();
 		file >> insert;
 		
@@ -238,7 +238,7 @@ void FileList::remove() {
 }
 
 // Удаление узла по логическому номеру
-void FileList::remove(unsigned int index) {
+void FileList::deletion(unsigned int index) {
 	// начать и доделать лол
 }
 
@@ -254,7 +254,7 @@ void FileList::update(const Train& data, unsigned int index) {
 
 	// Логический номер не может быть больше размера списка
 	if (index >= size) {
-		std::cout << "Недопустимый логический номер" << std::endl;
+		cout << "Недопустимый логический номер" << endl;
 		return;
 	}
 
@@ -263,7 +263,7 @@ void FileList::update(const Train& data, unsigned int index) {
 	// Если в списке только один узел, или надо обновить только первый, сразу перезаписываем его
 	if (size == 1 || index == 0) {
 		file >> insert;
-		file.seekg(0, std::ios::end); // Переходим в конец файла
+		file.seekg(0, ios::end); // Переходим в конец файла
 		insertPosition = file.tellg(); // Запоминаем позицию узла
 		first = insertPosition; // Обновляем указатель на позицию первого узла
 		insert.setData(data); // Присваиваем узлу объект
@@ -293,7 +293,7 @@ void FileList::update(const Train& data, unsigned int index) {
 	file.seekg(tail.getNext()); // Переходим к изначальной версии объекта
 	file >> insert; // Сохраняем данные, в том числе указатель на следующий узел
 	insert.setData(data); // Присваиваем узлу объект
-	file.seekg(0, std::ios::end); // Переходим в конец файла для записи
+	file.seekg(0, ios::end); // Переходим в конец файла для записи
 	insertPosition = file.tellg(); // Запоминаем позицию узла
 	file << insert; // Вставляем обновленный объект в конец файла
 	file.seekg(tailPosition); // Переходим на предыдущий элемент
@@ -310,7 +310,7 @@ void FileList::sort() {
 void FileList::find(unsigned int station) {
 	Node tail; // Хвост для обхода списка
 
-	std::cout << "Все поезда следующие до станции " << station << ":" << std::endl;
+	cout << "Все поезда следующие до станции " << station << ":" << endl;
 	if (size == 0) {
 		return;
 	}
@@ -332,7 +332,7 @@ void FileList::find(unsigned int station) {
 void FileList::print() {
 	Node tail; // Хвост для обхода списка
 
-	std::cout << "Движение поездов:" << std::endl;
+	cout << "Движение поездов:" << endl;
 	if (size == 0) {
 		return;
 	}

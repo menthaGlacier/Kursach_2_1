@@ -7,24 +7,24 @@
 class FileList {
 public:
 	// Конструктор, принимающий имя файла
-	FileList(const std::string& name);
+	FileList(const string& name);
 
 	// Деструктор
 	~FileList();
 
 	// Метод для открытия файла
-	void openFile(const std::string& name);
+	void openFile(const string& name);
 
 	// Метод для создания файла
-	void createFile(const std::string& name);
+	void createFile(const string& name);
 
-	// Вставки
+	// Вставка
 	void insert(const Train& data); // Вставка в конец
 	void insert(const Train& data, unsigned int index); // По логическому номеру
 
 	// Удаление
-	void remove(); // Удаление с конца
-	void remove(unsigned int index); // Удаление по логическому номеру
+	void deletion(); // Удаление с конца
+	void deletion(unsigned int index); // Удаление по логическому номеру
 
 	// Обновить объект узла
 	void update(const Train& data, unsigned int index);
@@ -41,8 +41,8 @@ public:
 	// Постраничный просмотр списка
 	void pageViewPrint();
 private:
-	std::string name; // Имя файла
-	std::fstream file; // Файловый поток
+	string name; // Имя файла
+	fstream file; // Файловый поток
 	unsigned long int size; // Размер списка
 	long long int first; // Позиция первого элемента списка
 };

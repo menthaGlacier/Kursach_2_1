@@ -13,11 +13,11 @@ Train::Train() {
 }
 
 // Конструктор по параметрам
-Train::Train(unsigned int trainNumber, std::string daysOfWeek,
+Train::Train(unsigned int trainNumber, string daysOfWeek,
 		unsigned int departureTimeHours, unsigned int departureTimeMinutes,
 		unsigned int travelTimeHours, unsigned int travelTimeMinutes,
 		unsigned int departureStationNumber, unsigned int destinationStationNumber,
-		std::vector<unsigned int> transit) {
+		vector<unsigned int> transit) {
 	setTrainNumber(trainNumber);
 	setDaysOfWeek(daysOfWeek);
 	setDepartureTimeHours(departureTimeHours);
@@ -48,7 +48,7 @@ unsigned int Train::getTrainNumber() {
 }
 
 // Получить дни недели отправления
-std::string Train::getDaysOfWeek() {
+string Train::getDaysOfWeek() {
 	return daysOfWeek;
 }
 
@@ -83,7 +83,7 @@ unsigned int Train::getDestinationStationNumber() {
 }
 
 // Получить вектор промежуточных станций
-std::vector<unsigned int> Train::getTransit() {
+vector<unsigned int> Train::getTransit() {
 	return transit;
 }
 
@@ -93,7 +93,7 @@ void Train::setTrainNumber(unsigned int trainNumber) {
 }
 
 // Установить дни недели отправления
-void Train::setDaysOfWeek(std::string daysOfWeek) {
+void Train::setDaysOfWeek(string daysOfWeek) {
 	this->daysOfWeek = daysOfWeek;
 }
 
@@ -152,7 +152,7 @@ void Train::setDestinationStationNumber(unsigned int destinationStationNumber) {
 }
 
 // Установить вектор промежуточных станций
-void Train::setTransit(std::vector<unsigned int> transit) {
+void Train::setTransit(vector<unsigned int> transit) {
 	this->transit = transit;
 }
 
@@ -168,22 +168,22 @@ void Train::clearTransit() {
 
 // Вывод
 void Train::print() {
-	std::cout << "Поезд №" << trainNumber << ":" << std::endl;
-	std::cout << "\tДни недели отправления: " << daysOfWeek << std::endl;
-	std::cout << "\tВремя отправления: " << departureTimeHours <<
-		":" << departureTimeMinutes << std::endl;
-	std::cout << "\tВремя в пути: " << travelTimeHours <<
-		":" << travelTimeMinutes << std::endl;
-	std::cout << "\tЕдет от станции " << departureStationNumber << 
-		" до станции " << destinationStationNumber << std::endl;
+	cout << "Поезд №" << trainNumber << ":" << endl;
+	cout << "\tДни недели отправления: " << daysOfWeek << endl;
+	cout << "\tВремя отправления: " << departureTimeHours <<
+		":" << departureTimeMinutes << endl;
+	cout << "\tВремя в пути: " << travelTimeHours <<
+		":" << travelTimeMinutes << endl;
+	cout << "\tЕдет от станции " << departureStationNumber << 
+		" до станции " << destinationStationNumber << endl;
 
 	// Проходим по каждому элементу вектора с помощью цикла for для диапозона
-	std::cout << "Промежуточные станции маршрута: ";
+	cout << "Промежуточные станции маршрута: ";
 	for (unsigned int i : transit) {
-		std::cout << i << " ";
+		cout << i << " ";
 	}
 
-	std::cout << std::endl;
+	cout << endl;
 }
 
 // Получить размер объекта
@@ -249,7 +249,7 @@ bool Train::operator<(const Train& train) {
 }
 
 // Перегрузка оператора записи в файловый поток объекта
-std::fstream& operator<<(std::fstream& file, const Train& train) {
+fstream& operator<<(fstream& file, const Train& train) {
 	// Запись в файл переменных со статическим размером
 	file.write((const char*)(&train.trainNumber), sizeof(train.trainNumber));
 	file.write((const char*)(&train.departureTimeHours), sizeof(train.departureTimeHours));
@@ -265,7 +265,7 @@ std::fstream& operator<<(std::fstream& file, const Train& train) {
 
 	// Если размер строки равен 0, нет смысла что-то записывать. Иначе делаем запись
 	if (stringSize > 0) {
-		// Записываем содержимое строки, переводя std::string в си-строку
+		// Записываем содержимое строки, переводя string в си-строку
 		file.write(train.daysOfWeek.c_str(), stringSize);
 	}
 
@@ -284,7 +284,7 @@ std::fstream& operator<<(std::fstream& file, const Train& train) {
 }
 
 // Перегрузка оператора чтения из файлового потока объекта
-std::fstream& operator>>(std::fstream& file, Train& train) {
+fstream& operator>>(fstream& file, Train& train) {
 	// Читаем из файла переменные со статическим размером
 	file.read((char*)(&train.trainNumber), sizeof(train.trainNumber));
 	file.read((char*)(&train.departureTimeHours), sizeof(train.departureTimeHours));
@@ -307,8 +307,8 @@ std::fstream& operator>>(std::fstream& file, Train& train) {
 		file.read(fileString, stringSize);
 		fileString[stringSize] = '\0';
 
-		// Создаем из си-строки std::string строку и передаем её объекту
-		std::string str(fileString);
+		// Создаем из си-строки string строку и передаем её объекту
+		string str(fileString);
 		train.setDaysOfWeek(str);
 
 		// Освобождаем память

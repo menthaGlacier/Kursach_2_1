@@ -103,7 +103,7 @@ void Menu::mainMenu() {
 				getline(cin, input); // Получаем ввод пользователя
 
 				if (input == "1") {
-					list->remove();
+					list->deletion();
 					break;
 				} else if (input == "2") {
 					cout << "Введите логический номер для удаления: ";
@@ -112,7 +112,7 @@ void Menu::mainMenu() {
 					getline(cin, input); // Получаем ввод пользователя
 
 					unsigned int index = stoul(input); // Переводим ввод в логический номер
-					list->remove(index); // Производим удаление по логическому номеру
+					list->deletion(index); // Производим удаление по логическому номеру
 					break;
 				}
 			}

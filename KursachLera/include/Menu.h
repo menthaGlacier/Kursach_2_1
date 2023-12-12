@@ -6,13 +6,12 @@
 
 class Menu {
 public:
-	Menu(); //
-	~Menu(); //
-	void mainMenu(); //
-	Train inputTrain();
+	Menu(); // Конструктор по умолчанию
+	~Menu(); // Деструктор
+	void mainMenu(); // Главное меню
+	Train inputTrain(); // Ввод объекта
 private:
 	FileList* list;
-	bool isOpen;
 };
 
 #endif /* MENU_H */
