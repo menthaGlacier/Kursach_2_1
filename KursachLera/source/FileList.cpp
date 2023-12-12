@@ -10,8 +10,8 @@ FileList::FileList(const std::string& name) {
 	openFile(name);
 
 	// Читаем из файла размер списка и позицию первого узла
-	file.read(reinterpret_cast<char*>(&size), sizeof(size));
-	file.read(reinterpret_cast<char*>(&first), sizeof(first));
+	file.read((char*)(&size), sizeof(size));
+	file.read((char*)(&first), sizeof(first));
 }
 
 // Деструктор
@@ -45,8 +45,8 @@ void FileList::createFile(const std::string& name) {
 	}
 
 	// Записываем в файл размер списка и позицию первого узла
-	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
+	file.write((const char*)(&size), sizeof(size));
+	file.write((const char*)(&first), sizeof(first));
 
 	// Закрываем созданный файл для продолжения работы
 	file.close();
@@ -100,8 +100,8 @@ void FileList::insert(const Train& data) {
 
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	file.seekg(0);
-	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
+	file.write((const char*)(&size), sizeof(size));
+	file.write((const char*)(&first), sizeof(first));
 
 	file.clear();
 }
@@ -170,8 +170,8 @@ void FileList::insert(const Train& data, unsigned int index) {
 
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	file.seekg(0);
-	file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-	file.write(reinterpret_cast<const char*>(&first), sizeof(first));
+	file.write((const char*)(&size), sizeof(size));
+	file.write((const char*)(&first), sizeof(first));
 }
 
 // Удаление узла с конца списка (НЕ ЗАКОНЧЕНО)
@@ -251,19 +251,54 @@ void FileList::update(const Train& data, unsigned int index) {
 	Node insert; // Новый узел, который мы будем вставлять
 	long long int insertPosition = -1;
 	insert.setNext(-1); // Следующего узел неизвестен
-	insert.setData(data); // Присваиваем объект
 
-	//
+	// Логический номер не может быть больше размера списка
 	if (index >= size) {
 		std::cout << "Недопустимый логический номер" << std::endl;
+		return;
 	}
 
-	// Доходим до узла, предшествующего индексу позиции вставки
-	for (unsigned int i = 0; i + 1 < index; i++) {
-		tailPosition = file.tellg(); // Сохраняем позицию начала очередного узла
-		file >> tail; // Читаем очередной узел
-		file.seekg(tail.getNext()); // Переходим на следующий узел
+	file.seekg(first); // Переходим на начало списка
+
+	// Если в списке только один узел, или надо обновить только первый, сразу перезаписываем его
+	if (size == 1 || index == 0) {
+		file >> insert;
+		file.seekg(0, std::ios::end); // Переходим в конец файла
+		insertPosition = file.tellg(); // Запоминаем позицию узла
+		first = insertPosition; // Обновляем указатель на позицию первого узла
+		insert.setData(data); // Присваиваем узлу объект
+		file << insert; // Вставляем обновленный узел в конец файла
+		
+		// Переходим в начало файла и перезаписываем позицию первого узла
+		file.seekg(0);
+		file.write((const char*)(&size), sizeof(size));
+		file.write((const char*)(&first), sizeof(first));
+		return;
 	}
+
+	// Обрабатываем обновление второго узла
+	if (index == 1) {
+		file.seekg(first);
+		tailPosition = file.tellg();
+		file >> tail;
+	} else {
+		// Доходим до узла, предшествующего индексу позиции узла для обновления
+		for (unsigned int i = 0; i + 1 < index; i++) {
+			tailPosition = file.tellg(); // Сохраняем позицию начала очередного узла
+			file >> tail; // Читаем очередной узел
+			file.seekg(tail.getNext()); // Переходим на следующий узел
+		}
+	}
+
+	file.seekg(tail.getNext()); // Переходим к изначальной версии объекта
+	file >> insert; // Сохраняем данные, в том числе указатель на следующий узел
+	insert.setData(data); // Присваиваем узлу объект
+	file.seekg(0, std::ios::end); // Переходим в конец файла для записи
+	insertPosition = file.tellg(); // Запоминаем позицию узла
+	file << insert; // Вставляем обновленный объект в конец файла
+	file.seekg(tailPosition); // Переходим на предыдущий элемент
+	tail.setNext(insertPosition); // Обновляем указатель на следующий узел
+	file << tail; // Перезаписываем узел
 }
 
 // Сортировка списка

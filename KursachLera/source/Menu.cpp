@@ -27,14 +27,15 @@ void Menu::mainMenu() {
 
 		while (true) {
 			cout << "Ваш ввод: ";
-			cin.clear(); //
-			getline(cin, input); //
+			input.clear(); // Очищаем строку ввода от прошлого ввода
+			cin.clear(); // Очищаем поток ввода от мусора
+			getline(cin, input); // Получаем ввод пользователя
 
 			if (input == "1") {
 				cout << "Введите имя файла: ";
-				input.clear(); //
-				cin.clear(); //
-				getline(cin, input); //
+				input.clear(); // Очищаем строку ввода от прошлого ввода
+				cin.clear(); // Очищаем поток ввода от мусора
+				getline(cin, input); // Получаем ввод пользователя
 				list = new FileList(input); // Создаем объект списка
 				break;
 			} else if (input == "2") {
@@ -52,26 +53,28 @@ void Menu::mainMenu() {
 	cout << "6 -- Поиск поездов, следующих до станции" << endl;
 	cout << "7 -- Закрыть программу" << endl;
 
-	input.clear(); //
-	cin.clear(); //
 	while(true) {
 		cout << "Ваш ввод: ";
-		cin.clear(); //
-		getline(cin, input); //
+		input.clear(); // Очищаем строку ввода от прошлого ввода
+		cin.clear(); // Очищаем поток ввода от мусора
+		getline(cin, input); // Получаем ввод пользователя
 
 		if (input == "1") {
+			cout << "Введите данные" << endl;
 			Train train = inputTrain(); // Производимв ввод объекта
+			
 			cout << "Выберите действие:" << endl;
 			cout << "1 -- Вставка в конец" << endl;
 			cout << "2 -- Вставка по логическому номеру" << endl;
 			
 			while(true) {
-				input.clear(); //
-				cin.clear(); //
-				getline(cin, input); //
+				cout << "Ваш ввод: ";
+				input.clear(); // Очищаем строку ввод от прошлого ввода
+				cin.clear(); // Очищаем поток ввода от мусора
+				getline(cin, input); // Получаем ввод пользователя
 
 				if (input == "1") {
-					list->insert(train);
+					list->insert(train); // Производим вставку в конец
 					break;
 				} else if (input == "2") {
 					unsigned int index = 0;
@@ -94,22 +97,21 @@ void Menu::mainMenu() {
 			cout << "2 -- Удаление по логическому номеру" << endl;
 			
 			while(true) {
-				input.clear(); //
-				cin.clear(); //
-				getline(cin, input); //
+				cout << "Ваш ввод: ";
+				input.clear(); // Очищаем строку ввода от прошлого ввода
+				cin.clear(); // Очищаем поток ввода от мусора
+				getline(cin, input); // Получаем ввод пользователя
 
 				if (input == "1") {
 					list->remove();
 					break;
 				} else if (input == "2") {
-					unsigned int index = 0;
+					cout << "Введите логический номер для удаления: ";
+					input.clear(); // Очищаем строку ввода от прошлого ввода
+					cin.clear(); // Очищаем поток ввода от мусора
+					getline(cin, input); // Получаем ввод пользователя
 
-					cout << "Введите логический номер для вставки: ";
-					input.clear(); //
-					cin.clear(); //
-					getline(cin, input); //
-
-					index = stoul(input); // Переводим ввод в логический номер для удаления
+					unsigned int index = stoul(input); // Переводим ввод в логический номер
 					list->remove(index); // Производим удаление по логическому номеру
 					break;
 				}
@@ -118,17 +120,27 @@ void Menu::mainMenu() {
 		} else if (input == "3") {
 			break;
 		} else if (input == "4") {
+			Train train; // Объект для ввода
+			cout << "Введите логический номер узла для обновления: ";
+			input.clear(); // Очищаем строку ввода от прошлого ввода
+			cin.clear(); // Очищаем поток ввода от мусора
+			getline(cin, input); // Получаем ввод пользователя
+
+			unsigned int index = stoul(input); // Переводим ввод в логический номер
+			
+			cout << "Введите данные" << endl;
+			train = inputTrain(); // Производимв ввод объекта
+			list->update(train, index); // Производим обновление элемента
 			break;
 		} else if (input == "5") {
 			list->print();
 			break;
 		} else if (input == "6") {
 			cout << "Введите станцию назначения: ";
-			input.clear(); //
-			cin.clear(); //
-			getline(cin, input); //
-
-			list->find(stoul(input));
+			input.clear(); // Очищаем строку ввода от прошлого ввода
+			cin.clear(); // Очищаем поток ввода от мусора
+			getline(cin, input); // Получаем ввод пользователя
+			list->find(stoul(input)); // Ищем все поезда, следующие до станции
 			break;
 		} else if (input == "7") {
 			exit(0); // Завершаем программу
@@ -142,43 +154,51 @@ Train Menu::inputTrain() {
 	string input; // Строка для ввода
 
 	cout << "Введите номер поезда: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setTrainNumber(stoul(input)); // Переводим ввод в число и присваивем
 
 	cout << "Введите рабочие дни недели: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setDaysOfWeek(input); // Присваиваем строку
 	
 	cout << "Введите часы времени отправления: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setDepartureTimeHours(stoul(input)); // Переводим ввод в число и присваивем
 
 	cout << "Введите минуты времени отправления: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setDepartureTimeMinutes(stoul(input)); // Переводим ввод в число и присваивем
 	
 	cout << "Введите часы времени в пути: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setTravelTimeHours(stoul(input)); // Переводим ввод в число и присваивем
 	
 	cout << "Введите минуты времени в пути: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setTravelTimeMinutes(stoul(input)); // Переводим ввод в число и присваивем
 	
 	cout << "Введите станцию отправления: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setDepartureStationNumber(stoul(input)); // Переводим ввод в число и присваивем
 	
 	cout << "Введите станцию назначения: ";
-	cin.clear(); //
-	getline(cin, input); //
+	input.clear(); // Очищаем строку ввода от прошлого ввода
+	cin.clear(); // Очищаем поток ввода от мусора
+	getline(cin, input); // Получаем ввод пользователя
 	train.setDestinationStationNumber(stoul(input)); // Переводим ввод в число и присваивем
 
 	int transitStation = 0; // Переменная для чтения ввода промежуточных станций
@@ -190,6 +210,8 @@ Train Menu::inputTrain() {
 	while (cin >> transitStation && transitStation > 0) {
 		train.appendToTransit(transitStation); // Добавляем станцию в массив
 	}
+
+	cin.clear(); // Очищаем поток ввода от мусора
 
 	// Возвращаем объект с заданными значениями
 	return train;
