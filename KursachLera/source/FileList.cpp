@@ -313,8 +313,6 @@ void FileList::sort() {
 	long long int leftPosition;
 	long long int rightPosition;
 
-	file.seekg(first);
-
 	if (size < 2) {
 		cout << "Недостаточно узлов для сортировки" << endl;
 		return;
@@ -322,6 +320,7 @@ void FileList::sort() {
 
 	// Если в списке всего два узла, их сразу же можно отсортировать
 	if (size == 2) {
+		file.seekg(first);
 		leftPosition = file.tellg(); // Запоминаем позицию левого узла
 		file >> left; // Читаем его
 		file.seekg(left.getNext()); // Переходим к следующему, правому узлу
@@ -353,20 +352,25 @@ void FileList::sort() {
 		return;
 	}
 
-	rightPosition = file.tellg();
-	file >> right;
-	while (right.getNext() != -1) {
-		tailPosition = leftPosition;
-		tail = left;
-		leftPosition = rightPosition;
-		left = right;
+
+	for (unsigned int i = 0; i < size; i++) {
+		file.seekg(first);
 		rightPosition = file.tellg();
 		file >> right;
+		file.seekg(right.getNext());
+		while (right.getNext() != -1) {
+			tailPosition = leftPosition;
+			tail = left;
+			leftPosition = rightPosition;
+			left = right;
+			rightPosition = file.tellg();
+			file >> right;
 
-		if (left > right) {
-			//
-			if (leftPosition == first) {
+			if (left > right) {
+				if (leftPosition == first) {
 					first = rightPosition;
+				}
+
 				left.setNext(right.getNext());
 				right.setNext(leftPosition);
 
@@ -382,29 +386,19 @@ void FileList::sort() {
 				leftPosition = rightPosition;
 				right = temp;
 				rightPosition = tempPosition;
-				file.seekg(right.getNext());
-			} else {
-				left.setNext(right.getNext());
-				right.setNext(leftPosition);
 
-				// Перезаписываем указатели в списке
-				file.seekg(leftPosition);
-				file << left;
-				file.seekg(rightPosition);
-				file << right;
-
-				Node temp(left);
-				unsigned int tempPosition = leftPosition;
-				left = right;
-				leftPosition = rightPosition;
-				right = temp;
-				rightPosition = tempPosition;
+				if (leftPosition != first) {
 					tail.setNext(leftPosition);
 					file.seekg(tailPosition);
 					file << tail;
-				file.seekg(right.getNext());
+				}
 			}
+
+			file.seekg(right.getNext());
+			file.clear();
 		}
+
+		file.clear();
 	}
 
 	file.clear();
