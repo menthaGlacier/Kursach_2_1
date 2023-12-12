@@ -116,6 +116,7 @@ void Menu::mainMenu() {
 					break;
 				}
 			}
+
 			break;
 		} else if (input == "3") {
 			break;
@@ -133,7 +134,25 @@ void Menu::mainMenu() {
 			list->update(train, index); // Производим обновление элемента
 			break;
 		} else if (input == "5") {
-			list->print();
+			cout << "Выберите действие:" << endl;
+			cout << "1 -- Полный просмотр списка" << endl;
+			cout << "2 -- Постраничный просмотр" << endl;
+			
+			while(true) {
+				cout << "Ваш ввод: ";
+				input.clear(); // Очищаем строку ввода от прошлого ввода
+				cin.clear(); // Очищаем поток ввода от мусора
+				getline(cin, input); // Получаем ввод пользователя
+
+				if (input == "1") {
+					list->print();
+					break;
+				} else if (input == "2") {
+					list->pageViewPrint();
+					break;
+				}
+			}
+
 			break;
 		} else if (input == "6") {
 			cout << "Введите станцию назначения: ";
@@ -210,8 +229,6 @@ Train Menu::inputTrain() {
 	while (cin >> transitStation && transitStation > 0) {
 		train.appendToTransit(transitStation); // Добавляем станцию в массив
 	}
-
-	cin.clear(); // Очищаем поток ввода от мусора
 
 	// Возвращаем объект с заданными значениями
 	return train;

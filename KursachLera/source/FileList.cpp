@@ -316,7 +316,7 @@ void FileList::find(unsigned int station) {
 	}
 
 	file.seekg(first); // Переходим к первому узлу
-	while (tail.getNext() != -1) {
+	while(tail.getNext() != -1) {
 		file >> tail;
 		if (tail.getData().getDestinationStationNumber() == station) {
 			tail.getData().print();
@@ -333,6 +333,9 @@ void FileList::print() {
 	Node tail; // Хвост для обхода списка
 
 	cout << "Движение поездов:" << endl;
+	cout << "-------------------------------------------" << endl;
+	
+	// Если список пуст, вывод не может быть осуществлён
 	if (size == 0) {
 		return;
 	}
@@ -342,12 +345,37 @@ void FileList::print() {
 		file >> tail;
 		tail.getData().print();
 		file.seekg(tail.getNext());
+		cout << "-------------------------------------------" << endl;
 	}
 
 	file.clear();
 }
 
 // Постраничный просмотр списка
-void pageViewPrint() {
+void FileList::pageViewPrint() {
+	Node tail;
 
+	unsigned int page = 1; // "Страница" просмотра
+	unsigned int nodePerPage = 4; // Количество узлов на страницу
+
+	cout << "Движение поездов:" << endl;
+	
+	// Если список пуст, просмотр не может быть осуществлён
+	if (size == 0) {
+		return;
+	}
+
+	file.seekg(first); // Переходим к первому узлу
+	while (tail.getNext() != -1) {
+		cout << "Страница №" << page << endl;
+		for (unsigned int i = 0; i < nodePerPage && tail.getNext() != -1; i++) {
+			file >> tail;
+			tail.getData().print();
+			file.seekg(tail.getNext());
+		}
+
+		cout << "Нажмите Enter для следующей страницы...";
+		cin.get();
+		page++;
+	}
 }
