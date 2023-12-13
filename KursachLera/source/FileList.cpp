@@ -65,9 +65,9 @@ void FileList::insert(const Train& data) {
 
 	// Если список пуст
 	if (size == 0) {
-		// Первый узел будет находиться после записей размера и позиции первого узла
-		first = sizeof(size) + sizeof(first);
-		file.seekg(first);
+		// Первый узел будет находиться в конце списка
+		file.seekg(0, ios::end);
+		first = file.tellg();
 	} else {
 		// Переходим на первый узел
 		file.seekg(first);
@@ -98,13 +98,12 @@ void FileList::insert(const Train& data) {
 	// Увеличиваем размер списка на единицу
 	size++;
 
-	file.clear();
-
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
-	file.seekg(0);
+	file.seekg(0, ios::beg);
 	file.write((const char*)(&size), sizeof(size));
 	file.write((const char*)(&first), sizeof(first));
 
+	file.flush();
 	file.clear();
 }
 
@@ -158,22 +157,23 @@ void FileList::insert(const Train& data, unsigned int index) {
 		insertPosition = file.tellg(); // Сохраняем позицию нового узла
 		file << insert; // Вставляем новый узел
 
-		file.clear(); // FIXME
+		file.clear();
 
 		tail.setNext(insertPosition); // Хвост теперь указывает на новый узел
 		file.seekg(tailPosition); // Переходим на позицию хвоста
 		file << tail; // Перезаписываем хвост
 	}
 
-	file.clear(); // FIXME
+	file.clear();
 
 	// Увеличиваем размер списка на единицу
 	size++;
 
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
-	file.seekg(0);
+	file.seekg(0, ios::beg);
 	file.write((const char*)(&size), sizeof(size));
 	file.write((const char*)(&first), sizeof(first));
+	file.flush();
 }
 
 // Удаление узла с конца списка (НЕ ЗАКОНЧЕНО)
@@ -216,27 +216,56 @@ void FileList::deletion() {
 	newList.write((const char*)(&size), sizeof(size));
 	newList.write((const char*)(&first), sizeof(first));
 
+	// Переходим в начало оригинального файла для чтения узлов
+	file.seekg(first);
+	
 	// Переходим в конец нового файла для записи узлов
 	newList.seekg(0, ios::end);
-	file.clear(); //FIXME
 
-	file.seekg(first);
 	insertPosition = newList.tellg();
 	first = insertPosition;
 	file >> insert;
 	newList << insert;
 
-	// да треш
-	for (unsigned int i = 0; i < size + 1; i++) {
+	while (true) {
 		tailPosition = insertPosition;
 		tail = insert;
-		file.seekg(0, ios::end);
+		file.seekg(tail.getNext());
+		newList.seekg(0, ios::end);
 		insertPosition = newList.tellg();
 		file >> insert;
-		
+
+		if (insert.getNext() == -1) {
+			tail.setNext(-1);
+			newList.seekg(tailPosition);
+			newList << tail;
+			break;
+		}
+
+		newList << insert;
+		tail.setNext(insertPosition);
+		newList.seekg(tailPosition);
+		newList << tail;
 	}
 
-	// FIXME ЗАКОНЧИТЬ!!!!
+	file.clear();
+	newList.clear();
+
+	size--;
+
+	// Переходим в начало файла и перезаписываем размер и позицию первого узла
+	newList.seekg(0, ios::beg);
+	newList.write((const char*)(&size), sizeof(size));
+	newList.write((const char*)(&first), sizeof(first));
+
+	newList.clear();
+	newList.flush();
+
+	file.close();
+	newList.close();
+	remove(name.c_str());
+	rename("new", name.c_str());
+	file.open(name, ios::binary | ios::in | ios::out);
 }
 
 // Удаление узла по логическому номеру
@@ -272,9 +301,12 @@ void FileList::update(const Train& data, unsigned int index) {
 		file << insert; // Вставляем обновленный узел в конец файла
 		
 		// Переходим в начало файла и перезаписываем позицию первого узла
-		file.seekg(0);
+		file.seekg(0, ios::beg);
 		file.write((const char*)(&size), sizeof(size));
 		file.write((const char*)(&first), sizeof(first));
+
+		file.clear();
+		file.flush();
 		return;
 	}
 
@@ -298,7 +330,7 @@ void FileList::update(const Train& data, unsigned int index) {
 	file.seekg(0, ios::end); // Переходим в конец файла для записи
 	insertPosition = file.tellg(); // Запоминаем позицию узла
 	file << insert; // Вставляем обновленный объект в конец файла
-	file.seekg(tailPosition); // Переходим на предыдущий элемент
+	file.seekg(tailPosition); // Переходим на предыдущий узел
 	tail.setNext(insertPosition); // Обновляем указатель на следующий узел
 	file << tail; // Перезаписываем узел
 }
@@ -340,25 +372,31 @@ void FileList::sort() {
 			file.seekg(rightPosition);
 			file << right;
 
-			// Обновляем позицию первого элемента
+			// Обновляем позицию первого узла
 			first = rightPosition;
 
 			// Переходим в начало файла и обновляем данные списка
-			file.seekg(0);
+			file.seekg(0, ios::beg);
 			file.write((const char*)(&size), sizeof(size));
 			file.write((const char*)(&first), sizeof(first));
+
+			file.clear();
+			file.flush();
 		}
 
 		return;
 	}
 
-
+	// Используем обычную сортировку пузырьком
 	for (unsigned int i = 0; i < size; i++) {
-		file.seekg(first);
-		rightPosition = file.tellg();
-		file >> right;
-		file.seekg(right.getNext());
+		file.seekg(first); // Переходим на первый узел
+		rightPosition = file.tellg(); // Запоминаем его позицию
+		file >> right; // Читаем первый узел
+		file.seekg(right.getNext()); // Переходим на следующий 
+
+		// Выполняем обход до конца списка
 		while (right.getNext() != -1) {
+			// Перекидываем все узлы
 			tailPosition = leftPosition;
 			tail = left;
 			leftPosition = rightPosition;
@@ -366,11 +404,15 @@ void FileList::sort() {
 			rightPosition = file.tellg();
 			file >> right;
 
+			// Если узел слева имеет номер поезда больше, чем узел справа, выполняем перестановку
 			if (left > right) {
+				// Если узел слева был первым, обновляем указатель на первый узел
 				if (leftPosition == first) {
 					first = rightPosition;
 				}
 
+				// Теперь левый узел указывает туда, куда указывал правый
+				// А правый узел указывает на позицию левого узла
 				left.setNext(right.getNext());
 				right.setNext(leftPosition);
 
@@ -380,6 +422,7 @@ void FileList::sort() {
 				file.seekg(rightPosition);
 				file << right;
 
+				// Т.к. узлы поменялись местами, обмениваемся данными
 				Node temp(left);
 				unsigned int tempPosition = leftPosition;
 				left = right;
@@ -387,13 +430,16 @@ void FileList::sort() {
 				right = temp;
 				rightPosition = tempPosition;
 
+				// Если узел слева не был первым, надо обновить узел перед ним
 				if (leftPosition != first) {
+					// Перезаписываем указатель, чтобы он указывал на переставленный узел
 					tail.setNext(leftPosition);
 					file.seekg(tailPosition);
 					file << tail;
 				}
 			}
 
+			// Переходим на следующий узел
 			file.seekg(right.getNext());
 			file.clear();
 		}
@@ -404,9 +450,12 @@ void FileList::sort() {
 	file.clear();
 
 	// Переходим в начало файла и обновляем данные списка
-	file.seekg(0);
+	file.seekg(0, ios::beg);
 	file.write((const char*)(&size), sizeof(size));
 	file.write((const char*)(&first), sizeof(first));
+
+	file.clear();
+	file.flush();
 }
 
 // Поиск всех поездов, следующих до станции

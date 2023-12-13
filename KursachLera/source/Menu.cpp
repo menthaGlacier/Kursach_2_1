@@ -16,6 +16,7 @@ Menu::~Menu() {
 //
 void Menu::mainMenu() {
 	string input; // Строка для чтения ввода пользователя
+	cin.clear();
 
 	cout << "-------- Главное меню --------" << std::endl;
 
@@ -62,6 +63,7 @@ void Menu::mainMenu() {
 		if (input == "1") {
 			cout << "Введите данные" << endl;
 			Train train = inputTrain(); // Производимв ввод объекта
+			cin.ignore(255, '\n');
 			
 			cout << "Выберите действие:" << endl;
 			cout << "1 -- Вставка в конец" << endl;
@@ -132,6 +134,7 @@ void Menu::mainMenu() {
 			
 			cout << "Введите данные" << endl;
 			train = inputTrain(); // Производимв ввод объекта
+			cin.ignore(255, '\n');
 			list->update(train, index); // Производим обновление элемента
 			break;
 		} else if (input == "5") {
