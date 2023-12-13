@@ -222,19 +222,28 @@ void FileList::deletion() {
 	// Переходим в конец нового файла для записи узлов
 	newList.seekg(0, ios::end);
 
+	// Переходим к первому узлу и сразу его записываем
 	insertPosition = newList.tellg();
 	first = insertPosition;
 	file >> insert;
 	newList << insert;
 
+	// Читаем до конца списка
 	while (true) {
+		// Перекидываем узел записи в хвост
 		tailPosition = insertPosition;
 		tail = insert;
+
+		// Переходим на следующий узел в файле чтения и в конец в файле записи
 		file.seekg(tail.getNext());
 		newList.seekg(0, ios::end);
+
+		// Сохраняем позицию для записи и читаем очередной узел
 		insertPosition = newList.tellg();
 		file >> insert;
 
+		// Если новый узел был конечным, пропускаем его запись и делаем
+		// хвост последним узлом списка
 		if (insert.getNext() == -1) {
 			tail.setNext(-1);
 			newList.seekg(tailPosition);
@@ -242,7 +251,10 @@ void FileList::deletion() {
 			break;
 		}
 
+		// Пишем в новый файл очередной узел
 		newList << insert;
+
+		// Перезаписываем хвост, чтобы он указывал на новый узел
 		tail.setNext(insertPosition);
 		newList.seekg(tailPosition);
 		newList << tail;
@@ -251,7 +263,7 @@ void FileList::deletion() {
 	file.clear();
 	newList.clear();
 
-	size--;
+	size--; // Размер списка уменьшается на единицу
 
 	// Переходим в начало файла и перезаписываем размер и позицию первого узла
 	newList.seekg(0, ios::beg);
@@ -261,16 +273,121 @@ void FileList::deletion() {
 	newList.clear();
 	newList.flush();
 
+	// Закрываем предыдущий и новый файл
 	file.close();
 	newList.close();
+
+	// Удаляем старый файл и переименовываем новый в имя старого файла
 	remove(name.c_str());
 	rename("new", name.c_str());
+
+	// Открываем новый файл для дальнейшей работы с ним
 	file.open(name, ios::binary | ios::in | ios::out);
 }
 
 // Удаление узла по логическому номеру
 void FileList::deletion(unsigned int index) {
-	// начать и доделать лол
+	// Временные переменные для хранения хвоста списка и его позиции
+	Node tail;
+	long long int tailPosition = -1;
+
+	Node insert; // Узел для вставки
+	long long int insertPosition = -1;
+	insert.setNext(-1);
+	
+	// Если список пуст, имеет размер 1 или индекс больше или равен размеру списка
+	// используем существующий метод удаление с конца для обработки этих случаев
+	if (size == 0 || size == 1 || index + 1 >= size) {
+		this->deletion();
+		return;
+	}
+
+	// Создаем новый файл для списка, в который будет перемещен текущий
+	fstream newList("new", ios::binary | ios::out);
+	if (!newList.is_open()) {
+		cout << "Не удалось создать файл" << endl;
+		exit(0); // Завершаем программу
+	}
+
+	// Записываем в новый файл размер списка и позицию первого узла
+	newList.write((const char*)(&size), sizeof(size));
+	newList.write((const char*)(&first), sizeof(first));
+
+	// Переходим в начало оригинального файла для чтения узлов
+	file.seekg(first);
+	
+	// Переходим в конец нового файла для записи узлов
+	newList.seekg(0, ios::end);
+
+	// Переходим к первому узлу и сразу его записываем
+	insertPosition = newList.tellg();
+	first = insertPosition;
+	file >> insert;
+	
+	// Если удаляется первый узел, пропускаем его и переходим к следующему
+	if (index == 0) {
+		file.seekg(insert.getNext());
+		file >> insert;
+	}
+
+	newList << insert;
+
+	unsigned int i = 1;
+
+	// Читаем до конца списка
+	while (insert.getNext() != -1) {
+		// Перекидываем узел записи в хвост
+		tailPosition = insertPosition;
+		tail = insert;
+
+		// Переходим на следующий узел в файле чтения и в конец в файле записи
+		file.seekg(tail.getNext());
+		newList.seekg(0, ios::end);
+
+		// Сохраняем позицию для записи и читаем очередной узел
+		insertPosition = newList.tellg();
+		file >> insert;
+
+		// Если очередной узел - требуемый узел для удаления, пропускаем его
+		if (i == index) {
+			file.seekg(insert.getNext());
+			file >> insert;
+		}
+
+		// Пишем в новый файл очередной узел
+		newList << insert;
+
+		// Перезаписываем хвост, чтобы он указывал на новый узел
+		tail.setNext(insertPosition);
+		newList.seekg(tailPosition);
+		newList << tail;
+
+		i++;
+	}
+
+	file.clear();
+	newList.clear();
+
+	size--; // Размер списка уменьшается на единицу
+
+	// Переходим в начало файла и перезаписываем размер и позицию первого узла
+	newList.seekg(0, ios::beg);
+	newList.write((const char*)(&size), sizeof(size));
+	newList.write((const char*)(&first), sizeof(first));
+
+	newList.clear();
+	newList.flush();
+
+	// Закрываем предыдущий и новый файл
+	file.close();
+	newList.close();
+
+	// Удаляем старый файл и переименовываем новый в имя старого файла
+	remove(name.c_str());
+	rename("new", name.c_str());
+
+	// Открываем новый файл для дальнейшей работы с ним
+	file.open(name, ios::binary | ios::in | ios::out);
 }
 
 // Обновить объект узла
@@ -492,11 +609,10 @@ void FileList::print() {
 		return;
 	}
 
-	file.seekg(first); // Переходим к первому узлу
-	while (tail.getNext() != -1) {
-		file >> tail;
-		tail.getData().print();
-		file.seekg(tail.getNext());
+	// Проходим по списку с помощью итератора
+	for (Iterator iter = begin(); iter != end(); iter++) {
+		Train train = *iter; // Получаем объект из итератора
+		train.print(); // Выводим его
 		cout << "-------------------------------------------" << endl;
 	}
 
